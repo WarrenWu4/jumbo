@@ -33,7 +33,7 @@ export default function Landing() {
             <div className="w-full h-full flex justify-center items-center text-center flex-col">
 
                 <div className="font-bold text-6xl px-20">a better way to flashcard</div>
-                <button className="flex items-center border-4 border-black border-solid px-4 py-3 rounded-md text-lg font-bold mt-12"> <BsGoogle className="mr-[0.8rem]"/> sign in with google</button>
+                <button onClick={signIn} className="flex items-center border-4 border-black border-solid px-4 py-3 rounded-md text-lg font-bold mt-12"> <BsGoogle className="mr-[0.8rem]"/> sign in with google</button>
                 <button className="mt-4 flex items-center ">try anonymously <BsArrowRight className="ml-2"/> </button>
 
             </div>
