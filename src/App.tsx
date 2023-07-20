@@ -1,5 +1,5 @@
 // pages
-import Dashboard from "./pages/Dashboard/Dashboard";
+import Dashboard from "./pages/Dashboard/Dashboard.tsx";
 import Landing from "./pages/Landing/Landing";
 
 
@@ -20,7 +20,7 @@ export default function App() {
     onAuthStateChanged(auth, async(user) => {
       if (user) {
         // user is signed in --> retrieve user data and set routing to dashboard
-        setDefaultElement(<Dashboard/>)
+        setDefaultElement(<Dashboard contentType={"home"}/>)
         setIsLoggedIn(true);
       }
       setIsVerifying(false);
@@ -36,9 +36,9 @@ export default function App() {
           <Route path="/" element={defaultElement}/>
 
           {isLoggedIn && <>
-            <Route path="/dashboard" element={<Dashboard/>}/>
-            <Route path="/dashboard/starred" element={<Temp/>}/>
-            <Route path="/dashboard/marketplace" element={<Temp/>}/>
+            <Route path="/dashboard" element={<Dashboard contentType={"home"} />}/>
+            <Route path="/dashboard/starred" element={<Dashboard contentType={"star"}/>}/>
+            <Route path="/dashboard/market" element={<Dashboard contentType={"market"}/>}/>
           </>
           }
 
@@ -51,8 +51,8 @@ export default function App() {
   )
 }
 
-const Temp = () => {
-  return (
-    <></>
-  )
-}
+// const Temp = () => {
+//   return (
+//     <></>
+//   )
+// }
