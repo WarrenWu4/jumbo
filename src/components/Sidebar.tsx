@@ -7,7 +7,6 @@ import { twMerge } from "tailwind-merge";
 export default function Sidebar() {
 
     const path = useLocation().pathname;
-    console.log(path)
     const dashRoutes = useMemo(() => [
         {
             icon: HiHome,

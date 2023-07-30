@@ -6,7 +6,9 @@ import Landing from "./pages/Landing/Landing";
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase.ts"
+import { auth, db } from "./firebase.ts"
+import { doc, setDoc } from "firebase/firestore";
+import EditSet from "./components/EditSet.tsx";
 
 export default function App() {
 
@@ -19,6 +21,12 @@ export default function App() {
 
     onAuthStateChanged(auth, async(user) => {
       if (user) {
+        await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+        })
         // user is signed in --> retrieve user data and set routing to dashboard
         setDefaultElement(<Dashboard contentType={"home"}/>)
         setIsLoggedIn(true);
@@ -39,6 +47,7 @@ export default function App() {
             <Route path="/dashboard" element={<Dashboard contentType={"home"} />}/>
             <Route path="/dashboard/starred" element={<Dashboard contentType={"star"}/>}/>
             <Route path="/dashboard/market" element={<Dashboard contentType={"market"}/>}/>
+            <Route path="/set/edit/:set_id" element={<EditSet/>} />
           </>
           }
 

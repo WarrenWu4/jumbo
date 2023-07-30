@@ -11,7 +11,7 @@ export default function Landing() {
         const result = await getRedirectResult(auth);
 
         if(result === null) {
-            // error signing in
+            console.log("Error signing in")
         }
 
     }
