@@ -19,6 +19,7 @@ export default function App() {
   // *check if user is logged in
   useEffect(() => {
 
+    // !i think will be a probably if same user logs in from different device so replace this with get current user and set the user document when google auth verifies
     onAuthStateChanged(auth, async(user:any) => {
       if (user) {
         await setDoc(doc(db, "users", user.uid), {

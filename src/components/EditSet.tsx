@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import Sidebar from "./Sidebar"
+import Sidebar from "./Sidebar/Sidebar"
 import { useEffect, useMemo, useState } from "react"
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";

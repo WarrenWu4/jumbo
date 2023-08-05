@@ -24,7 +24,6 @@ export default function Landing() {
     }
 
     const switchTheme = () => {
-        console.log(localStorage.theme)
         localStorage.theme = (localStorage.theme === "dark") ? "light":"dark"
         document.documentElement.className = localStorage.theme
         setCurrTheme(localStorage.theme)
