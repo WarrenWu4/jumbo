@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
-import { IoMdAdd } from "react-icons/io"
-import { BsFillGearFill } from "react-icons/bs";
+import { BsFillGearFill, BsQuestionCircle } from "react-icons/bs";
 import SidebarCard from "./SidebarCard";
 import { auth } from "../../firebase";
+import { Link } from "react-router-dom";
 
 export default function Sidebar() {
 
@@ -16,6 +16,11 @@ export default function Sidebar() {
 
     const addSet = () => {
         console.log("Working on it")
+    }
+
+    const premiumInfo = (e:any) => {
+        e.preventDefault()
+        console.log("workkk")
     }
 
     useEffect(() => {
@@ -59,7 +64,7 @@ export default function Sidebar() {
                     </div>
 
                     <div className="flex flex-col gap-y-4 mt-8">
-                        <div className="flex items-center text-base font-bold">
+                        <div className="flex items-center text-xl font-bold">
                             Sets
                         </div>
                         <div className="flex flex-col gap-y-2 ml-4">
@@ -68,20 +73,29 @@ export default function Sidebar() {
                             <SidebarCard title="testing" set_id="12124124" icon={undefined} />
                         </div>
 
-                        <button type="button" onClick={addSet} className="w-full flex items-center justify-center mt-4 border-2 rounded-lg border-solid border-black dark:border-white py-1" >
-                            <IoMdAdd size={20}/>
+                        <button type="button" onClick={addSet} className="w-full flex items-center justify-center mt-4 border-4 rounded-lg border-solid border-black dark:border-white font-black text-xl" >
+                            +
                         </button>
 
                     </div>
                 </div>
 
                 <div className="w-full">
-                    <div className="flex items-center justify-between">
+
+                    <Link to={"/shop"} className="w-full px-4 py-3 border-2 border-green-300 border-solid rounded-lg text-green-800 bg-green-200 dark:bg-green-800 dark:border-green-600 dark:text-green-200 flex items-center justify-between">
+                        buy premium 
+                        <button type="button" onClick={premiumInfo} >
+                            <BsQuestionCircle size={16} />
+                        </button>
+                    </Link>
+
+                    <div className="flex items-center justify-between mt-8">
 
                         <div className="flex items-center">
                             <img src={userProfile} alt="user profile" className="rounded-[50%] w-8 h-8 mr-2"/>
                             {userName}
                         </div>
+
 
                         <button type="button">
                             <BsFillGearFill size={18} />
