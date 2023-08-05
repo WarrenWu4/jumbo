@@ -1,25 +1,26 @@
 // pages
-import Dashboard from "./pages/Dashboard/Dashboard.tsx";
-import Landing from "./pages/Landing/Landing";
-
+import Dashboard from "./pages/Dashboard/index.tsx";
+import Landing from "./pages/Landing/index.tsx";
+import EditFlashcard from "./pages/EditFlashcard/index.tsx";
+import StudyFlaschard from "./pages/StudyFlaschard/index.tsx";
+import Error from "./pages/Error/index.tsx";
 
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase.ts"
 import { doc, setDoc } from "firebase/firestore";
-import EditSet from "./components/EditSet.tsx";
+
 
 export default function App() {
 
   const [isVerifying, setIsVerifying] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [defaultElement, setDefaultElement] = useState<React.ReactNode>(<Landing/>);
   
-  // check if user is logged in
+  // *check if user is logged in
   useEffect(() => {
 
-    onAuthStateChanged(auth, async(user) => {
+    onAuthStateChanged(auth, async(user:any) => {
       if (user) {
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
@@ -27,8 +28,6 @@ export default function App() {
             email: user.email,
             photoURL: user.photoURL,
         })
-        // user is signed in --> retrieve user data and set routing to dashboard
-        setDefaultElement(<Dashboard contentType={"home"}/>)
         setIsLoggedIn(true);
       }
       setIsVerifying(false);
@@ -41,27 +40,25 @@ export default function App() {
     <>
       {!isVerifying && <Routes>
 
-          <Route path="/" element={defaultElement}/>
-
           {isLoggedIn && <>
-            <Route path="/dashboard" element={<Dashboard contentType={"home"} />}/>
-            <Route path="/dashboard/starred" element={<Dashboard contentType={"star"}/>}/>
-            <Route path="/dashboard/market" element={<Dashboard contentType={"market"}/>}/>
-            <Route path="/set/edit/:set_id" element={<EditSet/>} />
+            <Route path="/" element={<Dashboard/>}/>
+            <Route path="/set/edit/:set_id" element={<EditFlashcard/>} />
+            <Route path="/set/view/:set_id" element={<StudyFlaschard/>} />
+
+
+            <Route path="/start" element={<Landing/>}/>
           </>
           }
 
-          {/* public routes */}
-          <Route path="/land" element={<Landing/>}/>
+          {!isLoggedIn && <>
+            <Route path="/" element={<Landing/>} />
+          </>
+          }
+
+          <Route path="*" element={<Error/>} />
 
         </Routes>
       }
     </>
   )
 }
-
-// const Temp = () => {
-//   return (
-//     <></>
-//   )
-// }
