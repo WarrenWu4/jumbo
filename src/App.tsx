@@ -11,6 +11,8 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase.ts"
 import { doc, setDoc } from "firebase/firestore";
 
+import { Analytics } from "@vercel/analytics/react";
+
 
 export default function App() {
 
@@ -59,6 +61,7 @@ export default function App() {
 
         </Routes>
       }
+      <Analytics/>
     </>
   )
 }
