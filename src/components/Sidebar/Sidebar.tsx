@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { BsFillGearFill, BsQuestionCircle } from "react-icons/bs";
 import SidebarCard from "./SidebarCard";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { Link } from "react-router-dom";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function Sidebar() {
 
@@ -13,6 +14,8 @@ export default function Sidebar() {
         setCurrTheme(localStorage.theme)
     }
     const [currTheme, setCurrTheme] = useState(localStorage.theme)
+    const [collectionData, setCollectionData] = useState<any[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const addSet = () => {
         console.log("Working on it")
@@ -25,8 +28,9 @@ export default function Sidebar() {
 
     useEffect(() => {
 
-        const getUser = () => {
+        const getUser = async() => {
             const user = auth.currentUser
+            const userId = auth.currentUser?.uid
             // if use ris anonymous
             if (user?.isAnonymous) {
                 // set user profile to default
@@ -40,6 +44,11 @@ export default function Sidebar() {
                 if (user?.displayName !== null && user?.displayName !== undefined) {
                     setUserName(user?.displayName)
                 }
+                const data = await getDocs(collection(db, `users/${userId}/sets`))
+                data.forEach((doc) => {
+                    setCollectionData([...collectionData, doc])
+                })
+                setIsLoading(false)
             }
         }
 
@@ -68,9 +77,11 @@ export default function Sidebar() {
                             Sets
                         </div>
                         <div className="flex flex-col gap-y-2 ml-4">
-                            <SidebarCard title="testing" set_id="12124124" icon={undefined} />
-                            <SidebarCard title="testing" set_id="12124124" icon={undefined} />
-                            <SidebarCard title="testing" set_id="12124124" icon={undefined} />
+
+                            {!isLoading &&
+                                collectionData.map((doc:any) => (<SidebarCard key={doc.id} title={doc.data().title} set_id={doc.id} icon={undefined} />)
+                                )
+                            }
                         </div>
 
                         <button type="button" onClick={addSet} className="w-full flex items-center justify-center mt-4 border-4 rounded-lg border-solid border-black dark:border-white font-black text-xl" >
