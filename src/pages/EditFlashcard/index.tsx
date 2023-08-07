@@ -39,7 +39,6 @@ export default function EditFlashcard() {
 
     const renderFlashcard = () => {
         let flashcards: ReactElement[] = []
-        console.log("running")
         for(let i=0;i<flashData.numOfCards;i++) {
             flashcards.push(<FlashcardRow row={flashData.cards[i]} />)
         }

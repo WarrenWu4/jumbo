@@ -4,21 +4,32 @@ import { BsFillGearFill, BsQuestionCircle } from "react-icons/bs";
 import SidebarCard from "./SidebarCard";
 import { auth, db } from "../../firebase";
 import { Link, useNavigate } from "react-router-dom";
-import { addDoc, collection, getCountFromServer, getDocs } from "firebase/firestore";
+import { addDoc, collection, getCountFromServer } from "firebase/firestore";
 import { IoClose } from "react-icons/io5";
+import GetFlashcardSets from "../../lib/GetFlashcardSets";
+
+interface UserProfile {
+    name: string;
+    imgPath: string;
+}
 
 export default function Sidebar() {
 
-    const switchTheme = () => {
+    const [currTheme, setCurrTheme] = useState<string>(localStorage.theme)
+    const [userProfile, setUserProfile] = useState<UserProfile>({name:"", imgPath:""})
+    const [collectionData, setCollectionData] = useState<any[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+
+
+    const [error, setError] = useState({"show": false, "msg":""})
+    const navigate = useNavigate()    
+
+    const switchTheme = (e:any) => {
+        e.preventDefault()
         localStorage.theme = (localStorage.theme === "dark") ? "light":"dark"
         document.documentElement.className = localStorage.theme
         setCurrTheme(localStorage.theme)
     }
-    const [currTheme, setCurrTheme] = useState<string>(localStorage.theme)
-    const [collectionData, setCollectionData] = useState<any[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [error, setError] = useState({"show": false, "msg":""})
-    const navigate = useNavigate()
 
     const addSetVerify = async() => {
         const user = auth.currentUser
@@ -61,39 +72,39 @@ export default function Sidebar() {
 
     useEffect(() => {
 
-        const getUser = async() => {
+        const loadData = async() => {
+
             const user = auth.currentUser
-            const userId = auth.currentUser?.uid
-            // if use ris anonymous
+            const userId = user?.uid!
+
+            // if user is anonymous
             if (user?.isAnonymous) {
-                // set user profile to default
-                // set user name to anyonymous
-                // get amount of sets
+                setUserProfile({
+                    name: "Anonymous",
+                    imgPath: "/favicon.ico"
+                })
                 // !set 30 day deletion warning
                 setError({"show":true, "msg":"account will be deleted in 30 days"})
             }
+
             // otherwise use the users settings
             else {
-                if (user?.photoURL !== null && user?.photoURL !== undefined) {
-                    setUserProfile(user?.photoURL)
-                }
-                if (user?.displayName !== null && user?.displayName !== undefined) {
-                    setUserName(user?.displayName)
-                }
-                const data = await getDocs(collection(db, `users/${userId}/sets`))
-                data.forEach((doc) => {
-                    setCollectionData([...collectionData, doc])
+                setUserProfile({
+                    name: user?.displayName!,
+                    imgPath: user?.photoURL!
                 })
-                setIsLoading(false)
             }
+
+            const data = await GetFlashcardSets(userId)
+            setCollectionData(data)
+
+            setIsLoading(false)
+
         }
 
-        getUser()
+        loadData()
 
     }, [])
-
-    const [userProfile, setUserProfile] = useState<string>("")
-    const [userName, setUserName] = useState<string>("")
 
     return (
         <div className="h-full hidden md:flex flex-col gap-y-2 full max-w-[288px] w-full px-2 py-12 relative">
@@ -102,7 +113,9 @@ export default function Sidebar() {
 
                 <div className="flex flex-col">
                     <div className="mb-8 font-bold text-2xl flex justify-between items-center">
-                        JUMBO
+                        <Link to={"/"}>
+                            JUMBO
+                        </Link>
                         <button type="button" onClick={switchTheme}>
                             {(currTheme === "dark") ? <FaSun size={24}/> : <FaMoon size={24}/>}
                         </button>
@@ -115,9 +128,11 @@ export default function Sidebar() {
                         <div className="flex flex-col gap-y-2 ml-4">
 
                             {!isLoading &&
-                                collectionData.map((doc:any) => (<SidebarCard key={doc.id} title={doc.data().title} set_id={doc.id} icon={undefined} />)
-                                )
+                                collectionData.map((doc:any) => {
+                                    return (<SidebarCard key={doc.id} title={doc.data().title} set_id={doc.id} icon={undefined} />)
+                                })
                             }
+
                         </div>
 
                         <button type="button" onClick={addSetVerify} className="w-full flex items-center justify-center mt-4 border-4 rounded-lg border-solid border-black dark:border-white font-black text-xl" >
@@ -139,8 +154,8 @@ export default function Sidebar() {
                     <div className="flex items-center justify-between mt-8">
 
                         <div className="flex items-center">
-                            <img src={userProfile} alt="user profile" className="rounded-[50%] w-8 h-8 mr-2"/>
-                            {userName}
+                            <img src={userProfile.imgPath} alt="user profile" className="rounded-[50%] w-8 h-8 mr-2"/>
+                            {userProfile.name}
                         </div>
 
 
