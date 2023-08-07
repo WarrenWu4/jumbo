@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
-import { BsFillGearFill, BsQuestionCircle } from "react-icons/bs";
+import { BsFillGearFill, BsGoogle, BsQuestionCircle } from "react-icons/bs";
 import SidebarCard from "./SidebarCard";
 import { auth, db } from "../../firebase";
+import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { addDoc, collection, getCountFromServer } from "firebase/firestore";
 import { IoClose } from "react-icons/io5";
 import GetFlashcardSets from "../../lib/GetFlashcardSets";
+import { Popover } from "@mui/material";
 
 interface UserProfile {
     name: string;
@@ -20,6 +22,8 @@ export default function Sidebar() {
     const [collectionData, setCollectionData] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
+    const [settingsView, setSettingsView] = useState<boolean>(false)
+    const settingsRef = useRef<HTMLButtonElement>(null)
 
     const [error, setError] = useState({"show": false, "msg":""})
     const navigate = useNavigate()    
@@ -55,19 +59,29 @@ export default function Sidebar() {
             cards: {0:["",""]},
             desc: "",
             numOfCards: 1,
-            title: "",
+            title: "Untitled",
         })
         navigate(`/set/edit/${docRef.id}`)
 
     }
 
     const showSettings = () => {
-        console.log("working on it")
+        setSettingsView((settingsView) ? false: true)
     }
 
     const premiumInfo = (e:any) => {
         e.preventDefault()
         console.log("workkk")
+    }
+
+    const userSignOut = async() => {
+        try {
+            await signOut(auth)
+            window.location.reload()
+        }
+        catch (e) {
+            console.log("Error signing out:", e)
+        }
     }
 
     useEffect(() => {
@@ -159,9 +173,49 @@ export default function Sidebar() {
                         </div>
 
 
-                        <button type="button" onCanPlay={showSettings}>
+                        <button ref={settingsRef} type="button" onClick={showSettings}>
                             <BsFillGearFill size={18} />
                         </button>
+
+                        <Popover
+                            open={settingsView}
+                            anchorEl={settingsRef.current}
+                            onClose={() => setSettingsView(false)}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'center'
+                            }}
+                            transformOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'center'
+                            }}
+                            elevation={0}
+                        >
+                            <div className="mb-4 flex flex-col text-base border-2 border-solid border-black dark:border-white">
+
+                                {(auth.currentUser?.isAnonymous) ? 
+                                <>
+                                {/* fix to authenticate on google rather than going back to the landing page */}
+                                    <Link to={"/start"} className="hover:bg-gray-200 px-4 py-2 w-full flex items-center">
+                                        Sign In <BsGoogle className="ml-[0.4rem]"/>
+                                    </Link>
+                                </>
+                                :
+                                <>
+                                    <Link to={"/shop"} className="hover:bg-gray-200 px-4 py-2 w-full flex items-start">
+                                        Buy Premium
+                                    </Link>
+                                    <Link to={`/profile/edit/${auth.currentUser?.uid}`} className="hover:bg-gray-200 px-4 py-2 w-full flex items-start">
+                                        Edit Profile
+                                    </Link>
+                                </>
+                                }
+
+                                <button type="button" onClick={userSignOut} className="hover:bg-gray-200 w-full flex items-start px-4 py-2">
+                                    Sign Out
+                                </button>
+                            </div>
+                        </Popover>
 
                     </div>
                 </div>
