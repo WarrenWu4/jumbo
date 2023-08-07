@@ -41,7 +41,7 @@ export default function Sidebar() {
         const userId = auth.currentUser?.uid
 
         const docRef = await addDoc(collection(db, `users/${userId}/sets`), {
-            cards: {0:""},
+            cards: {0:["",""]},
             desc: "",
             numOfCards: 1,
             title: "",
