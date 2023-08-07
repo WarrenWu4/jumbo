@@ -3,8 +3,9 @@ import { FaMoon, FaSun } from "react-icons/fa";
 import { BsFillGearFill, BsQuestionCircle } from "react-icons/bs";
 import SidebarCard from "./SidebarCard";
 import { auth, db } from "../../firebase";
-import { Link } from "react-router-dom";
-import { collection, getDocs } from "firebase/firestore";
+import { Link, useNavigate } from "react-router-dom";
+import { addDoc, collection, getCountFromServer, getDocs } from "firebase/firestore";
+import { IoClose } from "react-icons/io5";
 
 export default function Sidebar() {
 
@@ -13,12 +14,44 @@ export default function Sidebar() {
         document.documentElement.className = localStorage.theme
         setCurrTheme(localStorage.theme)
     }
-    const [currTheme, setCurrTheme] = useState(localStorage.theme)
+    const [currTheme, setCurrTheme] = useState<string>(localStorage.theme)
     const [collectionData, setCollectionData] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [error, setError] = useState({"show": false, "msg":""})
+    const navigate = useNavigate()
 
-    const addSet = () => {
-        console.log("Working on it")
+    const addSetVerify = async() => {
+        const user = auth.currentUser
+        const userId = auth.currentUser?.uid
+        // if user is able to add more sets
+        // if user is anyonymous only allow 1 set (we need to fking save db storage bro ;-;)
+        // if regular user, allow 20 sets
+        const snapshot = await getCountFromServer(collection(db, `users/${userId}/sets`))
+        const totSets = snapshot.data().count
+        if ((user?.isAnonymous && totSets < 1) || (!user?.isAnonymous && totSets < 20)) {
+            addSet()
+        }
+        // otherwise show an error
+        else {
+            setError({"show":true, "msg":"exceeded max allowed sets"})
+        }
+    }
+
+    const addSet = async() => {
+        const userId = auth.currentUser?.uid
+
+        const docRef = await addDoc(collection(db, `users/${userId}/sets`), {
+            cards: {0:""},
+            desc: "",
+            numOfCards: 1,
+            title: "",
+        })
+        navigate(`/set/edit/${docRef.id}`)
+
+    }
+
+    const showSettings = () => {
+        console.log("working on it")
     }
 
     const premiumInfo = (e:any) => {
@@ -35,6 +68,9 @@ export default function Sidebar() {
             if (user?.isAnonymous) {
                 // set user profile to default
                 // set user name to anyonymous
+                // get amount of sets
+                // !set 30 day deletion warning
+                setError({"show":true, "msg":"account will be deleted in 30 days"})
             }
             // otherwise use the users settings
             else {
@@ -60,7 +96,7 @@ export default function Sidebar() {
     const [userName, setUserName] = useState<string>("")
 
     return (
-        <div className="h-full hidden md:flex flex-col gap-y-2 full max-w-[288px] w-full px-2 py-12">
+        <div className="h-full hidden md:flex flex-col gap-y-2 full max-w-[288px] w-full px-2 py-12 relative">
             
             <div className="h-full border-black/40 dark:border-white/40 border-r-4 border-solid flex flex-col justify-between px-5 py-4">
 
@@ -84,7 +120,7 @@ export default function Sidebar() {
                             }
                         </div>
 
-                        <button type="button" onClick={addSet} className="w-full flex items-center justify-center mt-4 border-4 rounded-lg border-solid border-black dark:border-white font-black text-xl" >
+                        <button type="button" onClick={addSetVerify} className="w-full flex items-center justify-center mt-4 border-4 rounded-lg border-solid border-black dark:border-white font-black text-xl" >
                             +
                         </button>
 
@@ -108,13 +144,20 @@ export default function Sidebar() {
                         </div>
 
 
-                        <button type="button">
+                        <button type="button" onCanPlay={showSettings}>
                             <BsFillGearFill size={18} />
                         </button>
 
                     </div>
                 </div>
 
+            </div>
+
+            <div className={`px-4 py-3 text-base font-medium rounded-md bg-red-100 dark:bg-red-400 border-4 border-solid fixed bottom-40 left-1/2 -translate-x-1/2 border-red-200 dark:border-red-400 ${(error.show) ? "flex" : "hidden"}`}>
+            {error.msg}
+            <button type="button" onClick={() => {setError({"show":false, "msg":""})}} className="ml-3" >
+                <IoClose size={20} />
+            </button>
             </div>
                 
         </div>
