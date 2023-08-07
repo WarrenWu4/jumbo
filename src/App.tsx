@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase.ts"
 import { doc, setDoc } from "firebase/firestore";
+import Info from "./pages/Premium/Info/index.tsx";
 
 export default function App() {
 
@@ -47,6 +48,7 @@ export default function App() {
             <Route path="/set/view/:set_id" element={<StudyFlaschard/>} />
 
             <Route path="/shop" element={<Shop/>} />
+            <Route path="/premium/info" element={<Info/>} />
 
             <Route path="/start" element={<Landing/>}/>
           </>

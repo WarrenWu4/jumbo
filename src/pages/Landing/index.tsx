@@ -1,10 +1,9 @@
-import { FaMoon, FaClone, FaSun } from "react-icons/fa"
 import { BsGoogle, BsArrowRight } from "react-icons/bs"
 import { IoClose } from "react-icons/io5"
 import { GoogleAuthProvider, getRedirectResult, signInWithRedirect, signInAnonymously } from "firebase/auth"
 import { auth } from "../../firebase";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import Navbar from "../../components/Navbar/Navbar";
 
 export default function Landing() {
 
@@ -23,55 +22,12 @@ export default function Landing() {
         await signInAnonymously(auth)
     }
 
-    const switchTheme = () => {
-        localStorage.theme = (localStorage.theme === "dark") ? "light":"dark"
-        document.documentElement.className = localStorage.theme
-        setCurrTheme(localStorage.theme)
-    }
-
-    const handleDashboard = () => {
-        // get current user
-        const user = auth.currentUser
-        // if user is already logged in navigate to dashboard
-        if (user) {
-            navigate("/")
-        }   
-        // otherwise showcase an error modal
-        else {
-            setShowError(true)
-        }
-    }
-
-    const [currTheme, setCurrTheme] = useState(localStorage.theme)
     const [showError, setShowError] = useState(false)
-    const navigate = useNavigate()
-
-    useEffect(() => {
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
-          } else {
-            document.documentElement.classList.remove('dark')
-        }
-    }, [])
 
     return (
         <div className="w-screen h-screen flex flex-col relative">
 
-            <div className="w-full py-6 px-8 flex justify-between items-center">
-
-                <div className="font-bold text-2xl px-5 py-4">JUMBO</div>
-
-                <div className="flex px-5 py-4 [&>*]:ml-4">
-                    <button type="button" onClick={switchTheme}>
-                        {(currTheme === "dark") ? <FaSun size={24}/> : <FaMoon size={24}/>}
-                    </button>
-
-                    <button type="button" onClick={handleDashboard} >
-                        <FaClone size={24}/>
-                    </button>
-                </div>
-
-            </div>
+            <Navbar/>
 
             <div className="w-full h-full flex justify-center items-center text-center flex-col">
 

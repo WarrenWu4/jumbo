@@ -69,11 +69,6 @@ export default function Sidebar() {
         setSettingsView((settingsView) ? false: true)
     }
 
-    const premiumInfo = (e:any) => {
-        e.preventDefault()
-        console.log("workkk")
-    }
-
     const userSignOut = async() => {
         try {
             await signOut(auth)
@@ -160,9 +155,9 @@ export default function Sidebar() {
 
                     <Link to={"/shop"} className="w-full px-4 py-3 border-2 border-green-300 border-solid rounded-lg text-green-800 bg-green-200 dark:bg-green-800 dark:border-green-600 dark:text-green-200 flex items-center justify-between">
                         buy premium 
-                        <button type="button" onClick={premiumInfo} >
+                        <Link to={"/premium/info"} >
                             <BsQuestionCircle size={16} />
-                        </button>
+                        </Link>
                     </Link>
 
                     <div className="flex items-center justify-between mt-8">
