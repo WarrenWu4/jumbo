@@ -1,4 +1,4 @@
-export default function DashboardStar() {
+export default function Error() {
     return (
         <>
         </>
