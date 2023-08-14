@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import { DocumentData, doc, getDoc } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 import GetTheme from "../../lib/GetTheme";
-import { auth, db } from "../../firebase";
-import { useParams } from "react-router-dom";
+import { auth } from "../../firebase";
+import { useNavigate, useParams } from "react-router-dom";
+import GetFlashcardSet from "../../lib/GetFlashcards";
+
 
 export default function StudyFlaschard() {
 
     const {set_id} = useParams()
-    const [flashData, setFlashData] = useState<DocumentData>({cards: {0:[""]}, desc:"", numOfCards:1, title:""})
+    const [flashData, setFlashData] = useState<DocumentData>({cards: {box1: {0:["", ""]}}, desc:"", numOfCards:1, amountStudy:1, title:""})
+    const [randomized, setRandomized] = useState({box1: {0:["", ""]}})
+    const navigate = useNavigate()
 
     useEffect(() => {
 
@@ -18,13 +22,15 @@ export default function StudyFlaschard() {
         // get flashcard data
         const getFlashcardData = async() => {
             const userId = auth.currentUser?.uid
-            const snapshot = await getDoc(doc(db, `users/${userId}/sets/${set_id}`))
-            const data = snapshot.data()
+            const data = await GetFlashcardSet(userId!, set_id!)
             if (data === undefined) {
                 console.log("Error fetching data: data undefined")
+                navigate("/error")
             }
             else {
                 setFlashData(data)
+                // test randomized to make sure data is shaped correctly
+                // setRandomized(RandomizeFlashcards(flashData.amountStudy, flashData.cards))
             }
         }
 

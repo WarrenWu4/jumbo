@@ -1,49 +1,37 @@
-import { useEffect, useState, ReactElement } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
-import { auth, db } from "../../firebase";
-import { DocumentData, doc, getDoc } from "firebase/firestore";
+import { DocumentData } from "firebase/firestore";
 import { FaClone, FaRegClone } from "react-icons/fa"
 import FlashcardRow from "../../components/FlashcardRow/FlashcardRow";
+import GetTheme from "../../lib/GetTheme";
+import GetFlashcards from "../../lib/GetFlashcards";
+import { updateFlashcards } from "../../lib/EditFlashcards";
 
 export default function EditFlashcard() {
 
     const {set_id} = useParams()
-    const [flashData, setFlashData] = useState<DocumentData>({cards: {0:[""]}, desc:"", numOfCards:1, title:""})
+    const [data, setData] = useState<DocumentData>()
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
 
         // setting theme
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
-          } else {
-            document.documentElement.classList.remove('dark')
-        }
+        GetTheme()
 
         // get flashcard data
-        const getFlashcardData = async() => {
-            const userId = auth.currentUser?.uid
-            const snapshot = await getDoc(doc(db, `users/${userId}/sets/${set_id}`))
-            const data = snapshot.data()
-            if (data === undefined) {
-                console.log("Error fetching data: data undefined")
-            }
-            else {
-                setFlashData(data)
-            }
+        const getData = async() => {
+            const response = await GetFlashcards(set_id!)
+            setData(response.data?.data)
+            setIsLoading(false)
         }
 
-        getFlashcardData()
+        getData()
 
     }, [])
 
-    const renderFlashcard = () => {
-        let flashcards: ReactElement[] = []
-        for(let i=0;i<flashData.numOfCards;i++) {
-            flashcards.push(<FlashcardRow row={flashData.cards[i]} />)
-        }
-
-        return (flashcards)
+    const saveFlashcards = async() => {
+        await updateFlashcards(set_id!, data!)
     }
 
     return (
@@ -52,20 +40,25 @@ export default function EditFlashcard() {
             <div className="w-full h-full items-start flex text-4xl font-bold py-12 px-4 flex-col">
 
                 <div className="flex w-full justify-between items-center">
-                    <div className="w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4" >{flashData.title}</div>
+                    <div className="w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4 dark:border-white" >{data?.title}</div>
                     <div className="w-fit h-fit flex [&>*]:mx-2">
-                        <button type="button" className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black rounded-md flex items-center justify-center" ><FaClone size={24}/></button>
-                        <button type="button" className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black rounded-md flex items-center justify-center" ><FaRegClone size={24}/></button>
+                        <button type="button" className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black dark:border-white rounded-md flex items-center justify-center" ><FaClone size={24}/></button>
+                        <button type="button" className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black dark:border-white rounded-md flex items-center justify-center" ><FaRegClone size={24}/></button>
                     </div>
                 </div>
 
-                <div className="mt-4 text-xl font-semibold w-full p-2 border-4 border-solid border-black rounded-md">{flashData.desc}</div>
+                <div className="mt-4 text-xl font-semibold w-full p-2 border-4 border-solid border-black dark:border-white rounded-md">{data?.desc}</div>
 
-                <div className="text-3xl font-bold mt-8">Cards:</div>
+                <div className="text-3xl font-bold mt-8 flex w-full justify-between items-center">
+                    Cards:
+                    <button type="button" onClick={saveFlashcards} className="text-xl rounded-lg border-4 border-black border-solid px-3 py-1 hover:bg-black hover:text-white transition duration-500 dark:border-white dark:hover:bg-white dark:hover:text-black">save</button>    
+                </div>
 
                 <div className="w-full mt-4 flex flex-col gap-y-2">
-                    {
-                        renderFlashcard().map((e) => e)
+                    {!isLoading &&
+                        data!.cards.map((card:Map<number, string>, index:number) => {
+                            return (<FlashcardRow key={index} input={card} />)
+                        })
                     }
                 </div>
 

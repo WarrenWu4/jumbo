@@ -5,10 +5,12 @@ import SidebarCard from "./SidebarCard";
 import { auth, db } from "../../firebase";
 import { signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { addDoc, collection, getCountFromServer } from "firebase/firestore";
+import { collection, getCountFromServer } from "firebase/firestore";
 import { IoClose } from "react-icons/io5";
-import GetFlashcardSets from "../../lib/GetFlashcardSets";
 import { Popover } from "@mui/material";
+
+import addFlashcards from "../../lib/EditFlashcards";
+import { GetMultipleFlashcards } from "../../lib/GetFlashcards";
 
 interface UserProfile {
     name: string;
@@ -53,16 +55,8 @@ export default function Sidebar() {
     }
 
     const addSet = async() => {
-        const userId = auth.currentUser?.uid
-
-        const docRef = await addDoc(collection(db, `users/${userId}/sets`), {
-            cards: {0:["",""]},
-            desc: "",
-            numOfCards: 1,
-            title: "Untitled",
-        })
-        navigate(`/set/edit/${docRef.id}`)
-
+        const response = await addFlashcards()
+        navigate(`/set/edit/${response.docId}`)
     }
 
     const showSettings = () => {
@@ -84,7 +78,6 @@ export default function Sidebar() {
         const loadData = async() => {
 
             const user = auth.currentUser
-            const userId = user?.uid!
 
             // if user is anonymous
             if (user?.isAnonymous) {
@@ -104,8 +97,8 @@ export default function Sidebar() {
                 })
             }
 
-            const data = await GetFlashcardSets(userId)
-            setCollectionData(data)
+            const response = await GetMultipleFlashcards()
+            setCollectionData(response.data!)
 
             setIsLoading(false)
 
@@ -138,7 +131,7 @@ export default function Sidebar() {
 
                             {!isLoading &&
                                 collectionData.map((doc:any) => {
-                                    return (<SidebarCard key={doc.id} title={doc.data().title} set_id={doc.id} icon={undefined} />)
+                                    return (<SidebarCard key={doc.docId} title={doc.data.title} set_id={doc.docId} icon={undefined} />)
                                 })
                             }
 
@@ -153,12 +146,12 @@ export default function Sidebar() {
 
                 <div className="w-full">
 
-                    <Link to={"/shop"} className="w-full px-4 py-3 border-2 border-green-300 border-solid rounded-lg text-green-800 bg-green-200 dark:bg-green-800 dark:border-green-600 dark:text-green-200 flex items-center justify-between">
+                    <div className="w-full px-4 py-3 border-2 border-green-300 border-solid rounded-lg text-green-800 bg-green-200 dark:bg-green-800 dark:border-green-600 dark:text-green-200 flex items-center justify-between">
                         buy premium 
                         <Link to={"/premium/info"} >
                             <BsQuestionCircle size={16} />
                         </Link>
-                    </Link>
+                    </div>
 
                     <div className="flex items-center justify-between mt-8">
 
