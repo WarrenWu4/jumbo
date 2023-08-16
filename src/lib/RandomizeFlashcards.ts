@@ -8,6 +8,10 @@ interface BoxData {
 
 export default function LeitnerRandomize(amountStudied:number, boxes:BoxData) {
 
+    // ! still in testing phase
+
+    console.log("wip", amountStudied, boxes)
+
     // always include box1
     let randomized:number[] = boxes.box1
 
@@ -33,5 +37,26 @@ export default function LeitnerRandomize(amountStudied:number, boxes:BoxData) {
     //     currentIndex--
     //     [randomized[currentIndex], randomized[randomIndex]] = [randomized[randomIndex], randomized[currentIndex]];
     // }
+    return {status: "200 SUCCESS", order:randomized}
+}
+
+export function NormalRandomize(cards: string[][]) {
+
+    // create array of cardlength long
+    let randomized:number[] = []
+    for(let i=0;i<cards.length;i++) {
+        randomized.push(i)
+    }
+
+    // shuffle array
+    let currentIndex = randomized.length
+    let randomIndex
+
+    while (currentIndex!=0) {
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex--
+        [randomized[currentIndex], randomized[randomIndex]] = [randomized[randomIndex], randomized[currentIndex]]
+    }
+
     return {status: "200 SUCCESS", order:randomized}
 }
