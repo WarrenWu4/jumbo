@@ -9,7 +9,6 @@ interface BoxData {
 export default function LeitnerRandomize(amountStudied:number, boxes:BoxData) {
 
     // always include box1
-    console.log(boxes)
     let randomized:number[] = boxes.box1
 
     // if (amountStudied%2 === 0) {

@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { DocumentData } from "firebase/firestore";
 import GetTheme from "../../lib/GetTheme";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import GetFlashcardSet from "../../lib/GetFlashcards";
 import LeitnerRandomize from "../../lib/RandomizeFlashcards";
+import { BsCheck, BsX } from "react-icons/bs"
+import ProgressBar from "../../components/ProgressBar/ProgressBar";
 
 
 export default function StudyFlaschard() {
@@ -39,10 +41,31 @@ export default function StudyFlaschard() {
     }, [])
 
     const correct = () => {
-
+        // move to the next card index
+        if (cardIndex < data.numCards-1) {
+            setCardIndex(cardIndex+1)
+        }
+        else {
+            setCardIndex(0)
+        }
     }
     const incorrect = () => {
-
+        // move to the next card index
+        if (cardIndex < data.numCards-1) {
+            setCardIndex(cardIndex+1)
+        }
+        else {
+            setCardIndex(0)
+        }
+    }
+    const flipCard = () => {
+        const mapSize:number = Object.keys(data.cards[cardOrder[cardIndex]]).length
+        if (faceIndex < mapSize-1) {
+            setFaceIndex(faceIndex+1)
+        }
+        else {
+            setFaceIndex(0)
+        }
     }
     
     return (
@@ -51,13 +74,17 @@ export default function StudyFlaschard() {
             <div className="w-full h-full items-start flex text-4xl font-bold py-12 px-4 flex-col">
                 <div className="w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4" >{data.title}</div>
 
-                <div className="w-full flex justify-center gap-x-4 items-center">
-                    <button type="button" onClick={correct} className="w-16 h-16 rounded-[50%] border-solid border-4 border-black dark:border-white flex justify-center items-center">a</button>
+                <div className="w-full flex justify-center gap-x-4 items-center mb-6">
+                    <button type="button" onClick={incorrect} className="min-w-[64px] min-h-[64px] rounded-[50%] border-4 border-solid border-black dark:border-white flex justify-center items-center"><BsX size={24} strokeWidth={1}/></button>
                     {!isLoading &&
-                        <div className="w-full max-w-lg aspect-[7/5] border-4 border-solid border-black dark:border-white rounded-md p-2 mt-8">{data.cards[cardOrder[cardIndex]][faceIndex]}</div>
+                        <button type="button" onClick={flipCard} className="w-full max-w-lg aspect-[7/5] border-4 border-solid border-black dark:border-white rounded-md p-2 mt-8 flex justify-center items-center">{data.cards[cardOrder[cardIndex]][faceIndex]}</button>
                     }
-                    <button type="button" onClick={incorrect} className="w-16 h-16 rounded-[50%] border-4 border-solid border-black dark:border-white flex justify-center items-center">b</button>
+                    <button type="button" onClick={correct} className="min-w-[64px] min-h-[64px] rounded-[50%] border-solid border-4 border-black dark:border-white flex justify-center items-center"><BsCheck size={24} strokeWidth={1}/></button>
                 </div>
+
+                {!isLoading &&
+                    <ProgressBar currValue={cardIndex+1} maxValue={data.numCards} />
+                }
 
             </div>
         </div>
