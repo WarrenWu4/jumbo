@@ -4,7 +4,7 @@ import { DocumentData } from "firebase/firestore";
 import GetTheme from "../../lib/GetTheme";
 import { useParams } from "react-router-dom";
 import GetFlashcardSet from "../../lib/GetFlashcards";
-import LeitnerRandomize from "../../lib/RandomizeFlashcards";
+import { NormalRandomize } from "../../lib/RandomizeFlashcards";
 import { BsCheck, BsX } from "react-icons/bs"
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import FlashcardCard from "../../components/FlashcardCard/FlashcardCard";
@@ -31,7 +31,7 @@ export default function StudyFlaschard() {
             const response = await GetFlashcardSet(set_id!)
             if (response.data !== undefined) {
                 setData(response.data.data)
-                const res = LeitnerRandomize(response.data.data.amountStudied, response.data.data.boxes)
+                const res = NormalRandomize(response.data.data.cards)
                 setCardOrder(res.order)
             }
             setIsLoading(false)
