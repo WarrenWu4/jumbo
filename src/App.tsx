@@ -2,7 +2,7 @@
 import Dashboard from "./pages/Dashboard/index.tsx";
 import Landing from "./pages/Landing/index.tsx";
 import EditFlashcard from "./pages/EditFlashcard/index.tsx";
-import StudyFlaschard from "./pages/StudyFlaschard/index.tsx";
+import StudyFlashcard from "./pages/StudyFlaschard/index.tsx";
 import Error from "./pages/Error/index.tsx";
 import Shop from "./pages/Shop/index.tsx";
 
@@ -45,7 +45,7 @@ export default function App() {
           {isLoggedIn && <>
             <Route path="/" element={<Dashboard/>}/>
             <Route path="/set/edit/:set_id" element={<EditFlashcard/>} />
-            <Route path="/set/view/:set_id" element={<StudyFlaschard/>} />
+            <Route path="/set/view/:set_id" element={<StudyFlashcard/>} />
 
             <Route path="/shop" element={<Shop/>} />
             <Route path="/premium/info" element={<Info/>} />

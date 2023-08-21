@@ -10,7 +10,7 @@ import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import FlashcardCard from "../../components/FlashcardCard/FlashcardCard";
 
 
-export default function StudyFlaschard() {
+export default function StudyFlashcard() {
 
     const {set_id} = useParams()
     const [data, setData] = useState<DocumentData>({
