@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { DocumentData } from "firebase/firestore";
-import { FaClone, FaRegClone } from "react-icons/fa"
+import { FaClone } from "react-icons/fa"
 import FlashcardRow from "../../components/FlashcardRow/FlashcardRow";
 import GetTheme from "../../lib/GetTheme";
 import GetFlashcards from "../../lib/GetFlashcards";
@@ -20,6 +20,9 @@ export default function EditFlashcard() {
     const titleRef = useRef<HTMLInputElement>(null)
     const descRef = useRef<HTMLInputElement>(null)
 
+    const [cards, setCards] = useState<any>()
+    const [cardNum, setCardNum] = useState<number>(0)
+
     useEffect(() => {
 
         // setting theme
@@ -31,6 +34,8 @@ export default function EditFlashcard() {
             setData(response.data?.data)
             setTitle(response.data?.data.title)
             setDesc(response.data?.data.desc)
+            setCards(response.data?.data.cards)
+            setCardNum(response.data?.data.numCards)
             setIsLoading(false)
         }
         
@@ -39,7 +44,16 @@ export default function EditFlashcard() {
     }, [])
 
     const saveFlashcards = async() => {
-        await updateFlashcards(set_id!, data!)
+        const temp = {
+            title: title,
+            desc: desc,
+            numStudied: data?.numStudied,
+            numCards: cardNum,
+            cards: cards,
+            boxes: data?.boxes
+        }
+        await updateFlashcards(set_id!, temp)
+        alert("saved!")
     }
 
     const changeTitle = (e:any) => {
@@ -47,6 +61,11 @@ export default function EditFlashcard() {
     }
     const changeDesc = (e:any) => {
         setDesc(e.target.value)
+    }
+
+    const addCard = () => {
+        setCardNum(cardNum+1)
+        setCards([{0: "", 1:""}, ...cards])
     }
 
     return (
@@ -57,8 +76,7 @@ export default function EditFlashcard() {
                 <div className="flex w-full justify-between items-center">
                     <input type="text" value={(data === undefined) ? "":title} className="w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4 dark:border-white" ref={titleRef} onChange={changeTitle}/>
                     <div className="w-fit h-fit flex [&>*]:mx-2">
-                        <button type="button" className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black dark:border-white rounded-md flex items-center justify-center" ><FaClone size={24}/></button>
-                        <button type="button" className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black dark:border-white rounded-md flex items-center justify-center" ><FaRegClone size={24}/></button>
+                        <Link to={`/set/view/${set_id}`} className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black dark:border-white rounded-md flex items-center justify-center hover:bg-black transition duration-500 hover:text-white" ><FaClone size={24}/></Link>
                     </div>
                 </div>
 
@@ -70,9 +88,10 @@ export default function EditFlashcard() {
                 </div>
 
                 <div className="w-full mt-4 flex flex-col gap-y-2">
+                    <button type="button" onClick={addCard} className="w-full rounded-md bg-black hover:bg-white text-white hover:text-black transition-all duration-700 border-4 border-solid border-black h-14 mb-2 flex justify-center items-center" >+</button>
                     {!isLoading &&
-                        data!.cards.map((card:Map<number, string>, index:number) => {
-                            return (<FlashcardRow key={index} input={card} />)
+                        cards.map((card:Map<number, string>, index:number) => {
+                            return (<FlashcardRow key={index} id={index} input={card} cards={cards} setCards={setCards} />)
                         })
                     }
                 </div>

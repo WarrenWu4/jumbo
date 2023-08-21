@@ -1,4 +1,4 @@
-import { DocumentData, addDoc, collection, doc, updateDoc } from "firebase/firestore"
+import { addDoc, collection, doc, setDoc } from "firebase/firestore"
 import { auth, db } from "../firebase"
 
 // add a new flashcard set
@@ -30,11 +30,16 @@ interface FlashcardData {
 }
 
 // update an existing flashcard set
-export async function updateFlashcards (setId:string, flashData:FlashcardData|DocumentData) {
+export async function updateFlashcards (setId:string, flashData:FlashcardData) {
     try {
         const userId = auth.currentUser!.uid
-        await updateDoc(doc(db, `/users/${userId}/sets/${setId}`), {
-            flashData
+        await setDoc(doc(db, `/users/${userId}/sets/${setId}`), {
+            title: flashData.title,
+            desc: flashData.desc,
+            numStudied: flashData.numStudied,
+            numCards: flashData.numCards,
+            cards: flashData.cards,
+            boxes: flashData.boxes
         })
         return {status: "200 SUCCESS"}
     } catch(e) {
