@@ -14,7 +14,7 @@ export default function FlashcardRow(props: {id:number, input:Map<number, string
                     const editCard = (e:any) => {
                         setText(e.target.value)
                         let newCards = props.cards
-                        newCards[props.id][index] = text
+                        newCards[props.id][index] = e.target.value
                         props.setCards(newCards)
                     }
 
