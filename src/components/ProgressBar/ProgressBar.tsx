@@ -18,9 +18,9 @@ export default function ProgressBar({currValue, maxValue}:ProgressBarProps) {
 
     return (
         <div className="w-full flex justify-between items-center px-4">
-            <div className="w-[80%] h-2 bg-black/40 rounded-md">
+            <div className="w-full h-2 bg-black/40 rounded-md">
 
-                <div className={"bg-green-400 h-full rounded-[inherit] text-left" + ` w-[${percentage}%]`}>
+                <div style={{width: percentage+"%"}} className="bg-green-400 h-full rounded-[inherit] text-left">
                     {""}
                 </div>
 
