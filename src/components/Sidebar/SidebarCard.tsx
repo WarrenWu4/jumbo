@@ -2,7 +2,7 @@ import { Popover } from "@mui/material";
 import { ReactElement, useRef, useState } from "react";
 import { FaClone } from "react-icons/fa"
 import { SlOptionsVertical } from "react-icons/sl"
-import { Link, NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 interface SidebarCardProps {
     title:string;
@@ -17,6 +17,8 @@ export default function SidebarCard(props: SidebarCardProps) {
     const [settings, setSettings] = useState<boolean>(false)
     const settingsRef = useRef<HTMLButtonElement>(null)
 
+    const nav = useNavigate()
+
     const handleClick = (e:any) => {
         e.preventDefault()
         setSettings((settings) ? false:true)
@@ -24,6 +26,11 @@ export default function SidebarCard(props: SidebarCardProps) {
 
     const deleteSet = () => {
         alert("wip")
+    }
+
+    const handleStudy = () => {
+        setSettings(false)
+        nav(`/set/view/${props.set_id}`)
     }
 
     return (
@@ -52,9 +59,9 @@ export default function SidebarCard(props: SidebarCardProps) {
                 elevation={0}
             >
                 <div className="mb-4 flex flex-col text-base border-2 border-solid border-black dark:border-white">
-                    <Link to={`/set/view/${props.set_id}`} className="hover:bg-gray-200 w-full flex items-start px-4 py-2">
+                    <button type="button" onClick={handleStudy} className="hover:bg-gray-200 w-full flex items-start px-4 py-2">
                         Study
-                    </Link>
+                    </button>
                     <button type="button" onClick={deleteSet} className="hover:bg-gray-200 text-red-600 w-full flex items-start px-4 py-2">
                         Delete
                     </button>

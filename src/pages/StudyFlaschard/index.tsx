@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../../components/Sidebar/Sidebar";
 import { DocumentData } from "firebase/firestore";
 import GetTheme from "../../lib/GetTheme";
 import { useParams } from "react-router-dom";
@@ -39,7 +38,7 @@ export default function StudyFlashcard() {
 
         getFlashcardData()
 
-    }, [])
+    }, [set_id])
 
     const correct = () => {
         // move to the next card index & reset face index
@@ -72,24 +71,21 @@ export default function StudyFlashcard() {
     }
     
     return (
-        <div className="w-screen h-screen overflow-hidden flex">
-            <Sidebar/>
-            <div className="w-full h-full items-start flex text-4xl font-bold py-12 px-4 flex-col">
-                <div className="w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4" >{data.title}</div>
+        <div className="w-full h-full items-start flex text-4xl font-bold py-12 px-4 flex-col">
+            <div className="w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4" >{data.title}</div>
 
-                <div className="w-full flex justify-center gap-x-4 items-center mb-6">
-                    <button type="button" onClick={incorrect} className="min-w-[64px] min-h-[64px] rounded-[50%] border-4 border-solid border-black dark:border-white flex justify-center items-center"><BsX size={24} strokeWidth={1}/></button>
-                    {!isLoading &&
-                    <FlashcardCard cards={data.cards} cardIndex={cardOrder[cardIndex]} faceIndex={faceIndex} flipCard={flipCard}  />
-                    }
-                    <button type="button" onClick={correct} className="min-w-[64px] min-h-[64px] rounded-[50%] border-solid border-4 border-black dark:border-white flex justify-center items-center"><BsCheck size={24} strokeWidth={1}/></button>
-                </div>
-
+            <div className="w-full flex justify-center gap-x-4 items-center mb-6">
+                <button type="button" onClick={incorrect} className="min-w-[64px] min-h-[64px] rounded-[50%] border-4 border-solid border-black dark:border-white flex justify-center items-center"><BsX size={24} strokeWidth={1}/></button>
                 {!isLoading &&
-                    <ProgressBar currValue={cardIndex+1} maxValue={data.numCards} />
+                <FlashcardCard cards={data.cards} cardIndex={cardOrder[cardIndex]} faceIndex={faceIndex} flipCard={flipCard}  />
                 }
-
+                <button type="button" onClick={correct} className="min-w-[64px] min-h-[64px] rounded-[50%] border-solid border-4 border-black dark:border-white flex justify-center items-center"><BsCheck size={24} strokeWidth={1}/></button>
             </div>
+
+            {!isLoading &&
+                <ProgressBar currValue={cardIndex+1} maxValue={data.numCards} />
+            }
+
         </div>
     )
 }

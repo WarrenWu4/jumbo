@@ -3,8 +3,13 @@ import { useState } from "react"
 export default function FlashcardRow(props: {id:number, input:Map<number, string>, cards:any, setCards:Function}) {
     
     const addFace = () => {
-        console.log("wip")
+        let newCards = props.cards
+        const newIndex = Object.keys(newCards[props.id]).length
+        newCards[props.id][newIndex] = ""
+        console.log(newCards)
+        props.setCards(newCards)
     }
+
     return (
         <div className="flex w-full gap-x-4">
             {
