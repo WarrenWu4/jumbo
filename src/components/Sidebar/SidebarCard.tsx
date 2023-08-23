@@ -26,6 +26,7 @@ export default function SidebarCard(props: SidebarCardProps) {
     }
 
     const deleteSet = async() => {
+        // rerender or make sidebar card component reactive
         await deleteFlashcards(props.set_id)
         setSettings(false)
     }

@@ -77,7 +77,7 @@ export default function EditFlashcard() {
     }
 
     return (
-        <div className="w-full h-full items-start flex text-4xl font-bold py-12 px-4 flex-col">
+        <div className="w-full min-h-screen overflow-y-scroll items-start flex text-4xl font-bold py-12 px-4 flex-col">
 
             <div className="flex w-full justify-between items-center">
                 <input type="text" value={(data === undefined) ? "":title} className="w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4 dark:border-white" ref={titleRef} onChange={changeTitle}/>
