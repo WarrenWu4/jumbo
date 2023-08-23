@@ -3,6 +3,7 @@ import { ReactElement, useRef, useState } from "react";
 import { FaClone } from "react-icons/fa"
 import { SlOptionsVertical } from "react-icons/sl"
 import { NavLink, useNavigate } from "react-router-dom";
+import deleteFlashcards from "../../lib/DeleteFlashcards";
 
 interface SidebarCardProps {
     title:string;
@@ -24,8 +25,9 @@ export default function SidebarCard(props: SidebarCardProps) {
         setSettings((settings) ? false:true)
     }
 
-    const deleteSet = () => {
-        alert("wip")
+    const deleteSet = async() => {
+        await deleteFlashcards(props.set_id)
+        setSettings(false)
     }
 
     const handleStudy = () => {

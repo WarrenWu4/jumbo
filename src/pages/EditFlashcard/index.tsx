@@ -22,6 +22,8 @@ export default function EditFlashcard() {
     const [cards, setCards] = useState<any>()
     const [cardNum, setCardNum] = useState<number>(0)
 
+    const [boxes, setBoxes]  = useState<any>()
+
     useEffect(() => {
 
         // setting theme
@@ -35,6 +37,7 @@ export default function EditFlashcard() {
             setDesc(response.data?.data.desc)
             setCards(response.data?.data.cards)
             setCardNum(response.data?.data.numCards)
+            setBoxes(response.data?.data.boxes)
             setIsLoading(false)
         }
         
@@ -50,7 +53,7 @@ export default function EditFlashcard() {
             numStudied: data?.numStudied,
             numCards: cardNum,
             cards: cards,
-            boxes: data?.boxes
+            boxes: boxes!
         }
         await updateFlashcards(set_id!, temp)
         alert("saved!")
@@ -65,7 +68,12 @@ export default function EditFlashcard() {
 
     const addCard = () => {
         setCardNum(cardNum+1)
-        setCards([{0: "", 1:""}, ...cards])
+        // ! bug with multiple faces causing an error when trying to add cards
+        setCards([...cards, {0: "", 1:""}])
+        let tempBoxes = boxes
+        tempBoxes.box1.push(tempBoxes.box1.length)
+        setBoxes(tempBoxes)
+        console.log(boxes)
     }
 
     return (
@@ -89,7 +97,7 @@ export default function EditFlashcard() {
                 <button type="button" onClick={addCard} className="w-full rounded-md bg-black hover:bg-white text-white hover:text-black transition-all duration-700 border-4 border-solid border-black h-14 mb-2 flex justify-center items-center" >+</button>
                 {!isLoading &&
                     cards.map((card:Map<number, string>, index:number) => {
-                        return (<FlashcardRow key={index} id={index} input={card} cards={cards} setCards={setCards} />)
+                        return (<FlashcardRow key={index} id={index} input={card} cards={cards} setCards={setCards}/>)
                     })
                 }
             </div>
