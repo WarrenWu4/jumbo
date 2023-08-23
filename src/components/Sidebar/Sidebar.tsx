@@ -108,6 +108,13 @@ export default function Sidebar() {
 
     }, [])
 
+    const nav = useNavigate()
+    const premiumInfo = (e:any) => {
+        e.preventDefault()
+        nav("/premium/info")
+    }
+    const stripePaymentLink = "https://buy.stripe.com/test_cN229xcbb8PPcuI4gg"
+
     return (
         <div className="h-full hidden md:flex flex-col gap-y-2 full max-w-[288px] w-full px-2 py-12 relative">
             
@@ -146,12 +153,12 @@ export default function Sidebar() {
 
                 <div className="w-full">
 
-                    <div className="w-full px-4 py-3 border-2 border-green-300 border-solid rounded-lg text-green-800 bg-green-200 dark:bg-green-800 dark:border-green-600 dark:text-green-200 flex items-center justify-between">
+                    <a href={stripePaymentLink} target="_blank" className="w-full px-4 py-3 border-2 border-green-300 border-solid rounded-lg text-green-800 bg-green-200 dark:bg-green-800 dark:border-green-600 dark:text-green-200 flex items-center justify-between">
                         buy premium 
-                        <Link to={"/premium/info"} >
+                        <button type="button" onClick={premiumInfo} >
                             <BsQuestionCircle size={16} />
-                        </Link>
-                    </div>
+                        </button>
+                    </a>
 
                     <div className="flex items-center justify-between mt-8">
 
