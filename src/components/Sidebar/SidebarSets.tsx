@@ -35,6 +35,7 @@ export default function SidebarSets() {
 
     const deleteSet = async(set_id:string) => {
         await deleteFlashcards(set_id)
+        nav(`/`)
     }
 
     // ! set data is not validated which may cause issues
