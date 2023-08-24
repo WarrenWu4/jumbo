@@ -48,18 +48,3 @@ export async function anonymousSignIn() {
         return {status: "400 ERROR", errorMsg: e}
     }
 }
-
-export function getAuthState() {
-    try {
-        const user = auth.currentUser
-        if (user === null) {
-            return {status: "200 SUCCESS", isLoggedIn: true, userInfo: user}
-        }
-        else {
-            return {status: "200 SUCCESS", isLoggedIn: false}
-        }
-
-    } catch(e) {
-        return {status: "400 ERROR", errorMsg: e}
-    }
-}

@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { BsFillGearFill, BsGoogle, BsQuestionCircle } from "react-icons/bs";
 import SidebarCard from "./SidebarCard";
 import { auth, db } from "../../firebase";
-import { signOut } from "firebase/auth";
+import { UserProfile, signOut } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { collection, getCountFromServer } from "firebase/firestore";
 import { IoClose } from "react-icons/io5";
@@ -11,16 +11,15 @@ import { Popover } from "@mui/material";
 
 import addFlashcards from "../../lib/EditFlashcards";
 import { GetMultipleFlashcards } from "../../lib/GetFlashcards";
+import { AuthContext } from "../../App";
 
-interface UserProfile {
-    name: string;
-    imgPath: string;
-}
+import { JumboUserProfile } from "../../App";
+
 
 export default function Sidebar() {
 
     const [currTheme, setCurrTheme] = useState<string>(localStorage.theme)
-    const [userProfile, setUserProfile] = useState<UserProfile>({name:"", imgPath:""})
+    // const [userProfile, setUserProfile] = useState<UserProfile>({name:"", imgPath:""})
     const [collectionData, setCollectionData] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
@@ -73,38 +72,44 @@ export default function Sidebar() {
         }
     }
 
+    const userProfile = useContext<JumboUserProfile | null>(AuthContext)
+
     useEffect(() => {
 
-        const loadData = async() => {
-
-            const user = auth.currentUser
-
-            // if user is anonymous
-            if (user?.isAnonymous) {
-                setUserProfile({
-                    name: "Anonymous",
-                    imgPath: "/favicon.ico"
-                })
-                // !set 30 day deletion warning
-                setError({"show":true, "msg":"account will be deleted in 30 days"})
-            }
-
-            // otherwise use the users settings
-            else {
-                setUserProfile({
-                    name: user?.displayName!,
-                    imgPath: user?.photoURL!
-                })
-            }
-
-            const response = await GetMultipleFlashcards()
-            setCollectionData(response.data!)
-
-            setIsLoading(false)
-
+        const getData = async() => {
+            
         }
 
-        loadData()
+        // const loadData = async() => {
+
+        //     const user = auth.currentUser
+
+        //     // if user is anonymous
+        //     if (user?.isAnonymous) {
+        //         setUserProfile({
+        //             name: "Anonymous",
+        //             imgPath: "/favicon.ico"
+        //         })
+        //         // !set 30 day deletion warning
+        //         setError({"show":true, "msg":"account will be deleted in 30 days"})
+        //     }
+
+        //     // otherwise use the users settings
+        //     else {
+        //         setUserProfile({
+        //             name: user?.displayName!,
+        //             imgPath: user?.photoURL!
+        //         })
+        //     }
+
+        //     const response = await GetMultipleFlashcards()
+        //     setCollectionData(response.data!)
+
+        //     setIsLoading(false)
+
+        // }
+
+        // loadData()
 
     }, [])
 
@@ -136,11 +141,11 @@ export default function Sidebar() {
                         </div>
                         <div className="flex flex-col gap-y-2 ml-4">
 
-                            {!isLoading &&
+                            {/* {!isLoading &&
                                 collectionData.map((doc:any) => {
                                     return (<SidebarCard key={doc.docId} title={doc.data.title} set_id={doc.docId} icon={undefined} />)
                                 })
-                            }
+                            } */}
 
                         </div>
 
@@ -163,8 +168,8 @@ export default function Sidebar() {
                     <div className="flex items-center justify-between mt-8">
 
                         <div className="flex items-center">
-                            <img src={userProfile.imgPath} alt="user profile" className="rounded-[50%] w-8 h-8 mr-2"/>
-                            {userProfile.name}
+                            <img src={userProfile?.photoURL} alt="user profile" className="rounded-[50%] w-8 h-8 mr-2"/>
+                            {userProfile?.displayName}
                         </div>
 
 
