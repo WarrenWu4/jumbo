@@ -1,11 +1,8 @@
 // pages
 import Dashboard from "./pages/Dashboard/index.tsx";
 import Landing from "./pages/Landing/index.tsx";
-import EditFlashcard from "./pages/EditFlashcard/index.tsx";
-import StudyFlashcard from "./pages/StudyFlaschard/index.tsx";
 import Error from "./pages/Error/index.tsx";
 import Shop from "./pages/Shop/index.tsx";
-import Content from "./pages/Content/index.tsx";
 import Info from "./pages/Premium/Info/index.tsx";
 
 import { Routes, Route } from "react-router-dom";
@@ -41,9 +38,9 @@ export default function App() {
                     setUserInfo((user) ? tempUser : null)
                     setRoutes((user) ? 
                     <>
-                        <Route path="/" element={<Content content={<Dashboard/>}/>}/>
-                        <Route path="/set/edit/:set_id" element={<Content content={<EditFlashcard/>}/>} />
-                        <Route path="/set/view/:set_id" element={<Content content={<StudyFlashcard/>}/>} />
+                        <Route path="/" element={<Dashboard/>}/>
+                        <Route path="/set/edit/:set_id" element={<Dashboard/>}/>
+                        <Route path="/set/view/:set_id" element={<Dashboard/>}/>
         
                         <Route path="/shop" element={<Shop/>} />
                         <Route path="/premium/info" element={<Info/>} />

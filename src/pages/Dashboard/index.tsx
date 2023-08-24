@@ -1,17 +1,19 @@
 import { useEffect } from "react";
+import GetTheme from "../../lib/GetTheme";
+import Sidebar from "../../components/Sidebar/Sidebar";
 
 export default function Dashboard() {
 
     useEffect(() => {
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
-          } else {
-            document.documentElement.classList.remove('dark')
-        }
+
+        GetTheme()
+
+
     }, [])
 
     return (
-        <div className="w-full h-full flex justify-center items-center text-4xl font-bold py-12 px-4 text-center">
+        <div className="w-screen h-screen overflow-x-hidden flex">
+            <Sidebar/>
             Select/add a set to get started!
         </div>
     )
