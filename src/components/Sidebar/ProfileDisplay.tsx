@@ -1,8 +1,10 @@
-import { Link, Popover } from "@mui/material";
+import { Popover } from "@mui/material";
 import { signOut } from "firebase/auth";
 import { useRef, useState } from "react";
 import { BsFillGearFill, BsGoogle } from "react-icons/bs";
 import { auth } from "../../firebase";
+import { Link } from "react-router-dom";
+import googleSignIn from "../../lib/HandleAuth";
 
 interface ProfileDisplayProps {
     uid: string;
@@ -59,22 +61,22 @@ export default function ProfileDisplay({uid, photoURL, displayName, isAnonymous}
                         >
                             <div className="mb-4 flex flex-col text-base border-2 border-solid border-black dark:border-white">
 
-                                {/* {(isAnonymous) ? 
-                                <>
-                                    <Link to={"/start"} className="hover:bg-gray-200 px-4 py-2 w-full flex items-center">
-                                        Sign In <BsGoogle className="ml-[0.4rem]"/>
-                                    </Link>
-                                </>
-                                :
-                                <>
-                                    <Link to={"/shop"} className="hover:bg-gray-200 px-4 py-2 w-full flex items-start">
-                                        Buy Premium
-                                    </Link>
-                                    <Link to={`/profile/edit/${uid}`} className="hover:bg-gray-200 px-4 py-2 w-full flex items-start">
-                                        Edit Profile
-                                    </Link>
-                                </>
-                                } */}
+                                {(isAnonymous) ?
+                                    <>
+                                        <button type="button" onClick={googleSignIn} className="hover:bg-gray-200 px-4 py-2 w-full flex items-center">
+                                            Sign In <BsGoogle className="ml-1" />
+                                        </button>
+                                    </>
+                                    :
+                                    <>
+                                        <Link to="/shop" className="hover:bg-gray-200 px-4 py-2 w-full flex items-start">
+                                            Buy Premium
+                                        </Link>
+                                        <Link to={`/profile/edit/${uid}`} className="hover:bg-gray-200 px-4 py-2 w-full flex items-start">
+                                            Edit Profile
+                                        </Link>
+                                    </>
+                                }
 
                                 <button type="button" onClick={userSignOut} className="hover:bg-gray-200 w-full flex items-start px-4 py-2">
                                     Sign Out

@@ -2,6 +2,9 @@ import { useNavigate } from "react-router-dom"
 import addFlashcards from "../../lib/EditFlashcards"
 import { collection, getCountFromServer } from "firebase/firestore"
 import { auth, db } from "../../firebase"
+import { useEffect, useState } from "react"
+import { GetMultipleFlashcards } from "../../lib/GetFlashcards"
+import SidebarCard from "./SidebarCard"
 
 export default function SidebarSets() {
 
@@ -26,8 +29,30 @@ export default function SidebarSets() {
 
     const addSet = async() => {
         const response = await addFlashcards()
+        setSets([...sets, {data: response.data, docId: response.docId}])
         nav(`/set/edit/${response.docId}`)
     }
+
+    // ! set data is not validated which may cause issues
+    const [sets, setSets] = useState<any>()
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+
+    useEffect(() => {
+
+        const getFlashcards = async() => {
+            const response = await GetMultipleFlashcards()
+            if (response.status === "200 SUCCESS") {
+                setSets(response.data)
+            }
+            else {
+                console.log("Error getting flashcard data")
+            }
+            setIsLoading(false)
+        }
+
+        getFlashcards()
+
+    }, [])
 
     return (
         <div className="flex flex-col gap-y-4 mt-8">
@@ -36,11 +61,13 @@ export default function SidebarSets() {
             </div>
             <div className="flex flex-col gap-y-2 ml-4">
 
-                {/* {!isLoading &&
-                    collectionData.map((doc:any) => {
+                {(!isLoading && sets !== null) ?
+                    sets.map((doc:any) => {
                         return (<SidebarCard key={doc.docId} title={doc.data.title} set_id={doc.docId} icon={undefined} />)
                     })
-                } */}
+                    :
+                    <></>
+                }
 
             </div>
 

@@ -24,7 +24,7 @@ export const AuthContext = createContext<JumboUserProfile | null>(null)
 export default function App() {
 
     const [userInfo, setUserInfo] = useState<JumboUserProfile | null>( null)
-    const [routes, setRoutes] = useState<JSX.Element>(<Route path="/" element={<Landing/>} />)
+    const [routes, setRoutes] = useState<JSX.Element>(<Route path="/" element={<BlankPage/>} />)
     
     useEffect(() => {
         
@@ -72,5 +72,12 @@ export default function App() {
             </Routes>
         </AuthContext.Provider>
       </>
+    )
+}
+
+const BlankPage = () => {
+    return (
+        <div className="w-screen h-screen overflow-hidden bg-white dark:bg-black">
+        </div>
     )
 }
