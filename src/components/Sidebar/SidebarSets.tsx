@@ -5,6 +5,7 @@ import { auth, db } from "../../firebase"
 import { useEffect, useState } from "react"
 import { GetMultipleFlashcards } from "../../lib/GetFlashcards"
 import SidebarCard from "./SidebarCard"
+import deleteFlashcards from "../../lib/DeleteFlashcards"
 
 export default function SidebarSets() {
 
@@ -29,8 +30,11 @@ export default function SidebarSets() {
 
     const addSet = async() => {
         const response = await addFlashcards()
-        setSets([...sets, {data: response.data, docId: response.docId}])
         nav(`/set/edit/${response.docId}`)
+    }
+
+    const deleteSet = async(set_id:string) => {
+        await deleteFlashcards(set_id)
     }
 
     // ! set data is not validated which may cause issues
@@ -52,7 +56,7 @@ export default function SidebarSets() {
 
         getFlashcards()
 
-    }, [])
+    }, [sets])
 
     return (
         <div className="flex flex-col gap-y-4 mt-8">
@@ -63,7 +67,7 @@ export default function SidebarSets() {
 
                 {(!isLoading && sets !== null) ?
                     sets.map((doc:any) => {
-                        return (<SidebarCard key={doc.docId} title={doc.data.title} set_id={doc.docId} icon={undefined} />)
+                        return (<SidebarCard key={doc.docId} title={doc.data.title} set_id={doc.docId} deleteSet={deleteSet}/>)
                     })
                     :
                     <></>
