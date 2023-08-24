@@ -1,26 +1,10 @@
 import { BsGoogle, BsArrowRight } from "react-icons/bs"
 import { IoClose } from "react-icons/io5"
-import { GoogleAuthProvider, getRedirectResult, signInWithRedirect, signInAnonymously } from "firebase/auth"
-import { auth } from "../../firebase";
 import { useState } from "react";
 import Navbar from "../../components/Navbar/Navbar";
+import googleSignIn, { anonymousSignIn } from "../../lib/HandleAuth";
 
 export default function Landing() {
-
-    const googleSignIn = async() => {
-        const provider = new GoogleAuthProvider();
-        await signInWithRedirect(auth, provider);
-        const result = await getRedirectResult(auth);
-
-        if(result === null) {
-            console.log("Error signing in")
-        }
-
-    }
-
-    const anonymousSignIn = async() => {
-        await signInAnonymously(auth)
-    }
 
     const [showError, setShowError] = useState(false)
 

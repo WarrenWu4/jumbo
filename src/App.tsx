@@ -8,62 +8,52 @@ import Shop from "./pages/Shop/index.tsx";
 import Content from "./pages/Content/index.tsx";
 
 import { Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "./firebase.ts"
-import { doc, setDoc } from "firebase/firestore";
+import { createContext, useEffect, useState } from "react";
 import Info from "./pages/Premium/Info/index.tsx";
+import { getAuthState } from "./lib/HandleAuth.ts";
 
 export default function App() {
 
-  const [isVerifying, setIsVerifying] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
-  // *check if user is logged in
-  useEffect(() => {
+    const AuthContext = createContext(null)
+    const [userInfo, setUserInfo] = useState<any>()
+    const [routes, setRoutes] = useState<JSX.Element>()
+    
+    useEffect(() => {
+        
+        const response = getAuthState()
+        if (response.status === "200 SUCCESS") {
+            setUserInfo((response.isLoggedIn) ? response.userInfo : null)
+            setRoutes((response.isLoggedIn) ? 
+            <>
+                <Route path="/" element={<Content content={<Dashboard/>}/>}/>
+                <Route path="/set/edit/:set_id" element={<Content content={<EditFlashcard/>}/>} />
+                <Route path="/set/view/:set_id" element={<Content content={<StudyFlashcard/>}/>} />
 
-    // !i think will be a probably if same user logs in from different device so replace this with get current user and set the user document when google auth verifies
-    onAuthStateChanged(auth, async(user:any) => {
-      if (user) {
-        await setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            displayName: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
-        })
-        setIsLoggedIn(true);
-      }
-      setIsVerifying(false);
-    })
+                <Route path="/shop" element={<Shop/>} />
+                <Route path="/premium/info" element={<Info/>} />
 
-  }, [])
-  
+                <Route path="/start" element={<Landing/>}/>
+            </> 
+            : 
+            <>
+                <Route path="/" element={<Landing/>} />
+            </>
+            )
+        }
+        else {
+            console.log("Error occurred getting authentication state\nError msg:", response.errorMsg)
+        }
 
-  return (
-    <>
-      {!isVerifying && <Routes>
+    }, [])
 
-          {isLoggedIn && <>
-            <Route path="/" element={<Content content={<Dashboard/>}/>}/>
-            <Route path="/set/edit/:set_id" element={<Content content={<EditFlashcard/>}/>} />
-            <Route path="/set/view/:set_id" element={<Content content={<StudyFlashcard/>}/>} />
-
-            <Route path="/shop" element={<Shop/>} />
-            <Route path="/premium/info" element={<Info/>} />
-
-            <Route path="/start" element={<Landing/>}/>
-          </>
-          }
-
-          {!isLoggedIn && <>
-            <Route path="/" element={<Landing/>} />
-          </>
-          }
-
-          <Route path="*" element={<Error/>} />
-
-        </Routes>
-      }
-    </>
-  )
+    return (
+      <>
+        <AuthContext.Provider value={userInfo}>
+            <Routes>
+                {routes}
+                <Route path="*" element={<Error/>} />
+            </Routes>
+        </AuthContext.Provider>
+      </>
+    )
 }

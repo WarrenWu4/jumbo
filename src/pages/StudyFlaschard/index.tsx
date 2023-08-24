@@ -3,7 +3,7 @@ import { DocumentData } from "firebase/firestore";
 import GetTheme from "../../lib/GetTheme";
 import { useParams } from "react-router-dom";
 import GetFlashcardSet from "../../lib/GetFlashcards";
-import { NormalRandomize } from "../../lib/RandomizeFlashcards";
+import LeitnerRandomize, { NormalRandomize } from "../../lib/RandomizeFlashcards";
 import { BsCheck, BsX } from "react-icons/bs"
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import FlashcardCard from "../../components/FlashcardCard/FlashcardCard";
@@ -31,6 +31,7 @@ export default function StudyFlashcard() {
             if (response.data !== undefined) {
                 setData(response.data.data)
                 const res = NormalRandomize(response.data.data.cards)
+                LeitnerRandomize(response.data.data.numStudied, response.data.data.boxes)
                 setCardOrder(res.order)
             }
             setIsLoading(false)
