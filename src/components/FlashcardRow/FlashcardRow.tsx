@@ -1,3 +1,6 @@
+import { useRef } from "react";
+import JumboInput from "../JumboInput";
+
 interface FlashcardRowProps {
     cardText: string[];
     cardIndex: number;
@@ -18,15 +21,10 @@ export default function FlashcardRow({cardIndex, cardText}:FlashcardRowProps) {
             {
                 cardText.map((text:string, index:number) => {
 
-                    const editCard = (e:any) => {
-                        // setText(e.target.value)
-                        // let newCards = cardText
-                        // newCards[cardIndex][index] = e.target.value
-                        // props.setCards(newCards)
-                    }
+                    const tempRef = useRef<HTMLTextAreaElement>(null);
 
                     return (
-                        <input key={index} type="text" value={text} onChange={editCard} className="w-full border-black border-4 border-solid rounded-md text-base flex items-center px-4"/>
+                        <JumboInput key={index} value={text} textRef={tempRef} className="w-full border-black border-4 border-solid rounded-md text-base flex items-center px-4"  />
                     )
                 })
             }

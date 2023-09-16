@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, setDoc } from "firebase/firestore"
 import { auth, db } from "../firebase"
-import { defaultFlashcardSetData } from "../types/FlashcardSetTypes"
+import FlashcardSetData, { defaultFlashcardSetData } from "../types/FlashcardSetTypes"
 
 // add a new flashcard set
 export default async function addFlashcards () {
@@ -18,26 +18,13 @@ export default async function addFlashcards () {
     }
 }
 
-interface FlashcardData {
-    title: string;
-    desc: string;
-    numStudied: number;
-    numCards: number;
-    cards: string[][];
-    boxes: Map<string, number[]>
-}
-
 // update an existing flashcard set
-export async function updateFlashcards (setId:string, flashData:FlashcardData) {
+export async function updateFlashcards (setId:string, flashData:FlashcardSetData) {
     try {
         const userId = auth.currentUser!.uid
         await setDoc(doc(db, `/users/${userId}/sets/${setId}`), {
-            title: flashData.title,
-            desc: flashData.desc,
-            numStudied: flashData.numStudied,
-            numCards: flashData.numCards,
-            cards: flashData.cards,
-            boxes: flashData.boxes
+            metaData: JSON.stringify(flashData.metaData),
+            cardData: JSON.stringify(flashData.cardData)
         })
         return {status: "200 SUCCESS"}
     } catch(e) {

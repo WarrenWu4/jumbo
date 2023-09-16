@@ -1,23 +1,23 @@
-import { useRef } from "react"
+import { useState } from "react"
+import { twMerge } from "tailwind-merge";
 
 interface JumboInputProps {
-    text: string;
-    setText: Function;
-    maxLength: number | undefined;
+    value: string;
+    textRef: React.RefObject<HTMLTextAreaElement>;
+    maxLength?: number;
     className: string;
 }
 
-export default function JumboInput({text, setText, maxLength, className}:JumboInputProps) {
+
+export default function JumboInput({value, textRef, maxLength, className}:JumboInputProps) {
     
-    const textRef = useRef<any>(null)
+    const [text, setText] = useState<string>(value)
 
     const handleChange = (e:any) => {
-        
         // update text
         setText(e.target.value);
-
         // auto resize text area box
-        if (textRef !== null) {
+        if (textRef !== null && textRef.current !== null) {
             textRef.current.style.height = "12px"
             textRef.current.style.height = (textRef.current.scrollHeight) + 12 + "px"
         }
@@ -29,7 +29,7 @@ export default function JumboInput({text, setText, maxLength, className}:JumboIn
                 ref={textRef}
                 defaultValue={text} 
                 maxLength={(maxLength !== undefined) ? maxLength : 250}
-                className={className + " resize-none overflow-hidden outline-none"}
+                className={twMerge(className,"resize-none overflow-hidden outline-none")}
                 onChange={handleChange}
             />
         </>
