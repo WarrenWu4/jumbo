@@ -1,26 +1,28 @@
-import { useState } from "react"
+interface FlashcardRowProps {
+    cardText: string[];
+    cardIndex: number;
+}
 
-export default function FlashcardRow(props: {id:number, input:Map<number, string>, cards:any, setCards:Function}) {
+export default function FlashcardRow({cardIndex, cardText}:FlashcardRowProps) {
     
     const addFace = () => {
-        let newCards = props.cards
-        const newIndex = Object.keys(newCards[props.id]).length
-        newCards[props.id][newIndex] = ""
-        console.log(newCards)
-        props.setCards(newCards)
+        // let newCards = props.cards
+        // const newIndex = Object.keys(newCards[props.id]).length
+        // newCards[props.id][newIndex] = ""
+        // console.log(newCards)
+        // props.setCards(newCards)
     }
 
     return (
         <div className="flex w-full gap-x-4">
             {
-                Object.entries(props.input).map((e, index) => {
+                cardText.map((text:string, index:number) => {
 
-                    const [text, setText] = useState(e[1])
                     const editCard = (e:any) => {
-                        setText(e.target.value)
-                        let newCards = props.cards
-                        newCards[props.id][index] = e.target.value
-                        props.setCards(newCards)
+                        // setText(e.target.value)
+                        // let newCards = cardText
+                        // newCards[cardIndex][index] = e.target.value
+                        // props.setCards(newCards)
                     }
 
                     return (

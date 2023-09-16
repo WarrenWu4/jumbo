@@ -1,20 +1,17 @@
 import { addDoc, collection, doc, setDoc } from "firebase/firestore"
 import { auth, db } from "../firebase"
+import { defaultFlashcardSetData } from "../types/FlashcardSetTypes"
 
 // add a new flashcard set
 export default async function addFlashcards () {
     try {
-        const tempData = {
-            title: "Untitled",
-            desc: "Insert description here",
-            numStudied: 0,
-            numCards: 2,
-            cards: [{0:"", 1:""}, {0:"", 1:""}],
-            boxes: {box1: [0, 1], box2:[], box3:[], box4:[], box5:[]}
-        }
+        // * want to stringify meta data and card data separately to reduce amount written to db when editing
         const userId = auth.currentUser!.uid
-        const docRef = await addDoc(collection(db, `/users/${userId}/sets/`), tempData)
-        return {status: "200 SUCCESS", docId: docRef.id, data: tempData}
+        const docRef = await addDoc(collection(db, `/users/${userId}/sets/`), {
+            cardData: JSON.stringify(defaultFlashcardSetData.cardData),
+            metaData: JSON.stringify(defaultFlashcardSetData.metaData)
+        })
+        return {status: "200 SUCCESS", docId: docRef.id, cardData: defaultFlashcardSetData.cardData, metaData: defaultFlashcardSetData.metaData}
     } catch(e) {
         console.log("Error occurred adding flashcard set: ", e)
         return {status: "400 ERROR"}

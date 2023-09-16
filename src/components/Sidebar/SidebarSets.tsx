@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { GetMultipleFlashcards } from "../../lib/GetFlashcards"
 import SidebarCard from "./SidebarCard"
 import deleteFlashcards from "../../lib/DeleteFlashcards"
+import { FlashcardSetMetaData } from "../../types/FlashcardSetTypes"
 
 export default function SidebarSets() {
 
@@ -39,25 +40,27 @@ export default function SidebarSets() {
     }
 
     // ! set data is not validated which may cause issues
-    const [sets, setSets] = useState<any>()
-    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [setMetaDatas, setSetMetaDatas] = useState<FlashcardSetMetaData[]>([])
+    const [docIdDatas, setDocIdDatas] = useState<string[]>([])
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
 
         const getFlashcards = async() => {
             const response = await GetMultipleFlashcards()
-            if (response.status === "200 SUCCESS") {
-                setSets(response.data)
+            if (response.status === "200 SUCCESS" && response.metaDatas !== undefined && response.docIdDatas !== undefined) {
+                setSetMetaDatas(response.metaDatas)
+                setDocIdDatas(response.docIdDatas)
             }
             else {
-                console.log("Error getting flashcard data")
+                console.error("Error getting flashcard data...")
             }
-            setIsLoading(false)
+            setLoading(true)
         }
 
         getFlashcards()
 
-    }, [sets])
+    }, [setMetaDatas])
 
     return (
         <div className="flex flex-col gap-y-4 mt-8">
@@ -66,9 +69,9 @@ export default function SidebarSets() {
             </div>
             <div className="flex flex-col gap-y-2 ml-4">
 
-                {(!isLoading && sets !== null) ?
-                    sets.map((doc:any) => {
-                        return (<SidebarCard key={doc.docId} title={doc.data.title} set_id={doc.docId} deleteSet={deleteSet}/>)
+                {(loading && setMetaDatas !== null) ?
+                    setMetaDatas.map((setMetaData:FlashcardSetMetaData, index:number) => {
+                        return (<SidebarCard key={docIdDatas[index]} title={setMetaData.title} set_id={docIdDatas[index]} deleteSet={deleteSet}/>)
                     })
                     :
                     <></>

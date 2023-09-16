@@ -1,20 +1,22 @@
-import { DocumentData, collection, doc, getDoc, getDocs } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs } from "firebase/firestore"
 import { auth, db } from "../firebase"
-
-interface FlashcardDataInfo {
-    data:DocumentData
-    docId: string
-}
+import FlashcardSetData, { FlashcardSetMetaData } from "../types/FlashcardSetTypes"
 
 export default async function GetFlashcards (setId:string) {
 
     try {
         const userId = auth.currentUser!.uid
         const snapshot = await getDoc(doc(db, `/users/${userId}/sets/${setId}`))
-        const data:FlashcardDataInfo = {
-            data: snapshot.data()!, docId:snapshot.id
+        const snapshotData = snapshot.data()
+        if (snapshotData !== undefined) {
+            const tempData:FlashcardSetData = {
+                metaData: JSON.parse(snapshotData.metaData),
+                cardData: JSON.parse(snapshotData.cardData),
+            }
+            return {status: "200 SUCCESS", docId: snapshot.id, cardData: tempData.cardData, metaData: tempData.metaData}
+        } else {
+            return {status: "400 ERROR"}
         }
-        return {status: "200 SUCCESS", data: data}
     } catch(e) {
         console.log("Error occurred getting multiple flashcards: ", e)
         return {status: "400 ERROR"}
@@ -24,15 +26,14 @@ export default async function GetFlashcards (setId:string) {
 export async function GetMultipleFlashcards () {
     try {
         const userId = auth.currentUser!.uid
-        let data:FlashcardDataInfo[] = []
         const snapshotQuery = await getDocs(collection(db, `/users/${userId}/sets`))
+        let setMetaData:FlashcardSetMetaData[] = []
+        let docIdData:string[] = []
         snapshotQuery.forEach((document) => {
-            data.push({
-                data: document.data(),
-                docId: document.id
-            })
+            setMetaData.push(JSON.parse(document.data().metaData))
+            docIdData.push(document.id)
         })
-        return {status: "200 SUCCESS", data: data}
+        return {status: "200 SUCCESS", metaDatas: setMetaData, docIdDatas: docIdData}
     } catch(e) {
         console.log("Error occurred getting multiple flashcards: ", e)
         return {status: "400 ERROR"}
