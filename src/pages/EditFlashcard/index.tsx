@@ -5,50 +5,21 @@ import FlashcardRow from "../../components/FlashcardRow/FlashcardRow";
 import GetTheme from "../../lib/GetTheme";
 import GetFlashcards from "../../lib/GetFlashcards";
 import { updateFlashcards } from "../../lib/EditFlashcards";
-import { FlashcardMetaData, FlashcardSetMetaData, defaultFlashcardSetData } from "../../types/FlashcardSetTypes";
+import FlashcardSetData, { FlashcardMetaData, FlashcardSetMetaData, defaultFlashcardSetData } from "../../types/FlashcardSetTypes";
 import JumboInput from "../../components/JumboInput";
 
-export default function EditFlashcard() {
+interface EditFlashcardProps {
+    set_id: string;
+    data: FlashcardSetData
+}
 
-    const {set_id} = useParams<string>()
-    const [loading, setLoading] = useState<boolean>(false)
-    const [cardData, setCardData] = useState<FlashcardMetaData[]>(defaultFlashcardSetData.cardData)
-    const [metaData, setMetaData] = useState<FlashcardSetMetaData>(defaultFlashcardSetData.metaData)
-    const [docId, setDocId] = useState<string>()
+export default function EditFlashcard({set_id, data}:EditFlashcardProps) {
+
+    const [cardData, setCardData] = useState<FlashcardMetaData[]>(data.cardData)
+    const [metaData, setMetaData] = useState<FlashcardSetMetaData>(data.metaData)
 
     const titleRef = useRef<HTMLTextAreaElement>(null)
     const descRef = useRef<HTMLTextAreaElement>(null)
-
-    // rerender flashcard data if any rows change
-    // const [rerender, setRerender] = useState<boolean>(false)
-
-    useEffect(() => {
-
-        // setting theme
-        GetTheme()
-
-        // get flashcard data
-        const getData = async() => {
-            if (set_id === undefined) {
-                console.error("set_id is undefined...");
-                return
-            }
-            const response = await GetFlashcards(set_id)
-            if (response.cardData !== undefined && response.metaData !== undefined && response.docId !== undefined) {
-                setCardData(response.cardData)
-                setMetaData(response.metaData)
-                setDocId(response.docId)
-            } else {
-                console.error(`status code ${response.status}...`)
-                return
-            }
-            setLoading(true)
-        }
-        
-        setLoading(false)
-        getData()
-
-    }, [set_id])
 
     const saveFlashcards = async() => {
         let tempMetaData:FlashcardSetMetaData = metaData
@@ -96,9 +67,9 @@ export default function EditFlashcard() {
 
             <div className="w-full mt-4 flex flex-col gap-y-2">
                 <button type="button" onClick={addCard} className="w-full rounded-md bg-black hover:bg-white text-white hover:text-black transition-all duration-700 border-4 border-solid border-black h-14 mb-2 flex justify-center items-center" >+</button>
-                {loading &&
+                {(cardData !== undefined) &&
                     cardData.map((card:FlashcardMetaData, index:number) => {
-                        return (<FlashcardRow key={index} cardIndex={index} cardText={card.cardText}/>)
+                        return <FlashcardRow key={index} cardIndex={index} cardText={card.cardText}/>
                     })
                 }
             </div>

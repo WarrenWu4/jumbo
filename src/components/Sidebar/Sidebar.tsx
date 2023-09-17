@@ -6,9 +6,13 @@ import SidebarHeader from "./SidebarHeader";
 import SidebarSets from "./SidebarSets";
 import PremiumButton from "./PremiumButton";
 import ProfileDisplay from "./ProfileDisplay";
+import { FlashcardSets } from "../../types/FlashcardSetTypes";
 
+interface SidebarProps {
+    data: FlashcardSets
+}
 
-export default function Sidebar() {
+export default function Sidebar({data}: SidebarProps) {
 
     const userProfile = useContext<JumboUserProfile | null>(AuthContext)
 
@@ -21,7 +25,7 @@ export default function Sidebar() {
 
                     <SidebarHeader/>
 
-                    <SidebarSets/>
+                    <SidebarSets data={data}/>
 
                 </div>
 

@@ -1,4 +1,8 @@
 // ! firebase doesn't support arrays of arrays so need to stringify shit
+export interface FlashcardSets {
+    [key: string]: FlashcardSetData;
+}
+
 export default interface FlashcardSetData {
     cardData: FlashcardMetaData[];
     metaData: FlashcardSetMetaData;

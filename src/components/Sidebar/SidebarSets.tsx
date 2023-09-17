@@ -3,12 +3,15 @@ import addFlashcards from "../../lib/EditFlashcards"
 import { collection, getCountFromServer } from "firebase/firestore"
 import { auth, db } from "../../firebase"
 import { useEffect, useState } from "react"
-import { GetMultipleFlashcards } from "../../lib/GetFlashcards"
 import SidebarCard from "./SidebarCard"
 import deleteFlashcards from "../../lib/DeleteFlashcards"
-import { FlashcardSetMetaData } from "../../types/FlashcardSetTypes"
+import { FlashcardSets } from "../../types/FlashcardSetTypes"
 
-export default function SidebarSets() {
+interface SidebarSetsProps {
+    data: FlashcardSets
+}
+
+export default function SidebarSets({data}: SidebarSetsProps) {
 
     const nav = useNavigate()
 
@@ -40,27 +43,17 @@ export default function SidebarSets() {
     }
 
     // ! set data is not validated which may cause issues
-    const [setMetaDatas, setSetMetaDatas] = useState<FlashcardSetMetaData[]>([])
-    const [docIdDatas, setDocIdDatas] = useState<string[]>([])
-    const [loading, setLoading] = useState<boolean>(false);
+    const [cards, setCards] = useState<any[]>([])
 
     useEffect(() => {
 
-        const getFlashcards = async() => {
-            const response = await GetMultipleFlashcards()
-            if (response.status === "200 SUCCESS" && response.metaDatas !== undefined && response.docIdDatas !== undefined) {
-                setSetMetaDatas(response.metaDatas)
-                setDocIdDatas(response.docIdDatas)
-            }
-            else {
-                console.error("Error getting flashcard data...")
-            }
-            setLoading(true)
-        }
+        let tempCards:any[] = []
+        Object.keys(data).forEach((key:string) => {
+            tempCards.push({key:key, title:data[key].metaData.title})
+        })
+        setCards(tempCards)
 
-        getFlashcards()
-
-    }, [setMetaDatas])
+    }, [])
 
     return (
         <div className="flex flex-col gap-y-4 mt-8">
@@ -69,12 +62,10 @@ export default function SidebarSets() {
             </div>
             <div className="flex flex-col gap-y-2 ml-4">
 
-                {(loading && setMetaDatas !== null) ?
-                    setMetaDatas.map((setMetaData:FlashcardSetMetaData, index:number) => {
-                        return (<SidebarCard key={docIdDatas[index]} title={setMetaData.title} set_id={docIdDatas[index]} deleteSet={deleteSet}/>)
+                {
+                    cards.map((data:any, index:number) => {
+                        return <SidebarCard key={index} title={data.title} set_id={data.key} deleteSet={deleteSet}/>
                     })
-                    :
-                    <></>
                 }
 
             </div>

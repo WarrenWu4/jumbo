@@ -39,8 +39,7 @@ export default function App() {
                     setRoutes((user) ? 
                     <>
                         <Route path="/" element={<Dashboard/>}/>
-                        <Route path="/set/edit/:set_id" element={<Dashboard/>}/>
-                        <Route path="/set/view/:set_id" element={<Dashboard/>}/>
+                        <Route path="/set/:view_type/:set_id" element={<Dashboard/>}/>
         
                         <Route path="/shop" element={<Shop/>} />
                         <Route path="/premium/info" element={<Info/>} />

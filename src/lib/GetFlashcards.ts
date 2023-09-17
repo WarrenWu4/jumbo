@@ -1,6 +1,6 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore"
 import { auth, db } from "../firebase"
-import FlashcardSetData, { FlashcardSetMetaData } from "../types/FlashcardSetTypes"
+import FlashcardSetData, { FlashcardSets } from "../types/FlashcardSetTypes"
 
 export default async function GetFlashcards (setId:string) {
 
@@ -26,14 +26,16 @@ export default async function GetFlashcards (setId:string) {
 export async function GetMultipleFlashcards () {
     try {
         const userId = auth.currentUser!.uid
+        // ! should only get all the docs once
         const snapshotQuery = await getDocs(collection(db, `/users/${userId}/sets`))
-        let setMetaData:FlashcardSetMetaData[] = []
-        let docIdData:string[] = []
+        let tempData:FlashcardSets = {} 
         snapshotQuery.forEach((document) => {
-            setMetaData.push(JSON.parse(document.data().metaData))
-            docIdData.push(document.id)
+            tempData[document.id] = { 
+                metaData: JSON.parse(document.data().metaData), 
+                cardData: JSON.parse(document.data().cardData)
+            }
         })
-        return {status: "200 SUCCESS", metaDatas: setMetaData, docIdDatas: docIdData}
+        return {status: "200 SUCCESS", data: tempData}
     } catch(e) {
         console.log("Error occurred getting multiple flashcards: ", e)
         return {status: "400 ERROR"}
