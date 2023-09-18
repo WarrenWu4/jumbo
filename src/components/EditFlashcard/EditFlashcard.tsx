@@ -1,34 +1,64 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaClone } from "react-icons/fa"
-import FlashcardRow from "../../components/FlashcardRow/FlashcardRow";
-import GetTheme from "../../lib/GetTheme";
+import FlashcardRow from "./FlashcardRow";
 import GetFlashcards from "../../lib/GetFlashcards";
 import { updateFlashcards } from "../../lib/EditFlashcards";
 import FlashcardSetData, { FlashcardMetaData, FlashcardSetMetaData, defaultFlashcardSetData } from "../../types/FlashcardSetTypes";
-import JumboInput from "../../components/JumboInput";
+import JumboInput from "../JumboInput";
 
 interface EditFlashcardProps {
     set_id: string;
-    data: FlashcardSetData
 }
 
-export default function EditFlashcard({set_id, data}:EditFlashcardProps) {
-
-    const [cardData, setCardData] = useState<FlashcardMetaData[]>(data.cardData)
-    const [metaData, setMetaData] = useState<FlashcardSetMetaData>(data.metaData)
-
+export default function EditFlashcard({set_id}:EditFlashcardProps) {
+    
     const titleRef = useRef<HTMLTextAreaElement>(null)
     const descRef = useRef<HTMLTextAreaElement>(null)
+    const nav = useNavigate()
+
+    const [loaded, setLoaded] = useState<boolean>(false)
+    const [data, setData] = useState<FlashcardSetData>(defaultFlashcardSetData)
+
+
+    // only run once on mount
+    useEffect(() => {
+
+        console.count("EditFlashcard index.tsx useEffect")
+
+        let subscribed = true
+        setLoaded(false)
+
+        const getData = async() => {
+            if (!subscribed) return
+
+            const dat = await GetFlashcards(set_id)
+
+            if (dat.status === "400 ERROR") nav("/error")
+
+            if (dat.metaData !== undefined && dat.cardData) {
+                setData({metaData: dat.metaData, cardData: dat.cardData})
+            }
+            setLoaded(true)
+        }
+
+        getData()
+
+        return () => {
+            subscribed = false;
+        }
+
+    }, [set_id])
+
 
     const saveFlashcards = async() => {
-        let tempMetaData:FlashcardSetMetaData = metaData
+        let tempMetaData:FlashcardSetMetaData = data.metaData
         if (titleRef.current !== null && descRef.current !== null) {
             tempMetaData.title = titleRef.current.defaultValue
             tempMetaData.desc = descRef.current.defaultValue
         } 
         if (set_id !== undefined) {
-            await updateFlashcards(set_id, {metaData: tempMetaData, cardData:cardData})
+            await updateFlashcards(set_id, {metaData: tempMetaData, cardData:data.cardData})
         } else {
             console.error("set_id is undefined...")
         }
@@ -36,29 +66,36 @@ export default function EditFlashcard({set_id, data}:EditFlashcardProps) {
     }
 
     const addCard = () => {
-        const tempFlashcard:FlashcardMetaData = {
+        const tempFlashcards:FlashcardMetaData[] = [{
             cardText: ["", ""],
             cardCorrect: 0,
             cardStudied: 0,
             currBox: 0,
-        }
-        setCardData([...cardData, tempFlashcard])
+        }, ...data.cardData]
+        console.log(tempFlashcards)
+        setData({
+            metaData: data.metaData,
+            cardData: tempFlashcards
+        })
     }
 
     return (
         <div className="w-full min-h-screen overflow-y-scroll items-start flex text-4xl font-bold py-12 px-4 flex-col">
 
-            <div className="flex w-full justify-between items-center">
+            {loaded && 
+            <>
+                <div className="flex w-full justify-between items-center">
+                    <JumboInput value={data.metaData.title} textRef={titleRef} className={"w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4 dark:border-white"} />
 
-                <JumboInput value={metaData.title} textRef={titleRef} className={"w-full font-bold text-2xl border-4 border-solid border-black rounded-md px-4 py-2 mr-4 dark:border-white"} />
-
-
-                <div className="w-fit h-fit flex [&>*]:mx-2">
+                    <div className="w-fit h-fit flex [&>*]:mx-2">
                     <Link to={`/set/view/${set_id}`} className="h-[56px] aspect-square font-bold text-2xl border-4 border-solid border-black dark:border-white rounded-md flex items-center justify-center hover:bg-black transition duration-500 hover:text-white" ><FaClone size={24}/></Link>
-                </div>
-            </div>
+                    </div>
 
-            <JumboInput value={metaData.desc} textRef={descRef} className={"h-[56px] mt-4 text-xl font-semibold w-full p-2 border-4 border-solid border-black rounded-md"} />
+                </div>
+                
+                <JumboInput value={data.metaData.desc} textRef={descRef} className={"h-[56px] mt-4 text-xl font-semibold w-full p-2 border-4 border-solid border-black rounded-md"} />
+            </>
+            }
 
             <div className="text-3xl font-bold mt-8 flex w-full justify-between items-center">
                 Cards:
@@ -67,8 +104,8 @@ export default function EditFlashcard({set_id, data}:EditFlashcardProps) {
 
             <div className="w-full mt-4 flex flex-col gap-y-2">
                 <button type="button" onClick={addCard} className="w-full rounded-md bg-black hover:bg-white text-white hover:text-black transition-all duration-700 border-4 border-solid border-black h-14 mb-2 flex justify-center items-center" >+</button>
-                {(cardData !== undefined) &&
-                    cardData.map((card:FlashcardMetaData, index:number) => {
+                {loaded && (data.cardData !== undefined) &&
+                    data.cardData.map((card:FlashcardMetaData, index:number) => {
                         return <FlashcardRow key={index} cardIndex={index} cardText={card.cardText}/>
                     })
                 }

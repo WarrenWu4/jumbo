@@ -5,13 +5,10 @@ import { auth, db } from "../../firebase"
 import { useEffect, useState } from "react"
 import SidebarCard from "./SidebarCard"
 import deleteFlashcards from "../../lib/DeleteFlashcards"
-import { FlashcardSets } from "../../types/FlashcardSetTypes"
+import { FlashcardSetMetaData, defaultFlashcardSetData } from "../../types/FlashcardSetTypes"
+import { GetSetsMetaData } from "../../lib/GetFlashcards"
 
-interface SidebarSetsProps {
-    data: FlashcardSets
-}
-
-export default function SidebarSets({data}: SidebarSetsProps) {
+export default function SidebarSets() {
 
     const nav = useNavigate()
 
@@ -42,16 +39,37 @@ export default function SidebarSets({data}: SidebarSetsProps) {
         nav(`/`)
     }
 
+    const [loaded, setLoaded] = useState<boolean>(false)
     // ! set data is not validated which may cause issues
-    const [cards, setCards] = useState<any[]>([])
+    const [data, setData] = useState<FlashcardSetMetaData[]>([defaultFlashcardSetData.metaData])
+    const [links, setLinks] = useState<string[]>([""])
 
     useEffect(() => {
 
-        let tempCards:any[] = []
-        Object.keys(data).forEach((key:string) => {
-            tempCards.push({key:key, title:data[key].metaData.title})
-        })
-        setCards(tempCards)
+        console.count("SidebarSets.tsx useEffect")
+
+        let subscribed = true;
+
+        const getData = async() => {
+            // only run if connection goes through 
+            if (!subscribed) return
+
+            const dat = await GetSetsMetaData()
+
+            if (dat.metaData !== undefined && dat.docId !== undefined) {
+                setData(dat.metaData)
+                setLinks(dat.docId)
+            } else {
+                console.error("Error getting data in SidebarSets.tsx...")
+            }
+            setLoaded(true);
+        }
+
+        getData()
+
+        return () => {
+            subscribed = false;
+        }
 
     }, [])
 
@@ -62,9 +80,9 @@ export default function SidebarSets({data}: SidebarSetsProps) {
             </div>
             <div className="flex flex-col gap-y-2 ml-4">
 
-                {
-                    cards.map((data:any, index:number) => {
-                        return <SidebarCard key={index} title={data.title} set_id={data.key} deleteSet={deleteSet}/>
+                {loaded && 
+                    data.map((data:FlashcardSetMetaData, index:number) => {
+                        return <SidebarCard key={index} title={data.title} set_id={links[index]} deleteSet={deleteSet}/>
                     })
                 }
 

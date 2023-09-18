@@ -8,6 +8,8 @@ interface FlashcardRowProps {
 
 export default function FlashcardRow({cardIndex, cardText}:FlashcardRowProps) {
     
+    console.log(cardIndex)
+
     const addFace = () => {
         // let newCards = props.cards
         // const newIndex = Object.keys(newCards[props.id]).length
