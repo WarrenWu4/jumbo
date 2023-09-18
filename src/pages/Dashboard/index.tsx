@@ -16,16 +16,18 @@ export default function Dashboard() {
 
         GetTheme()
 
-        if (view_type === undefined && set_id === undefined) {
-            setComponent(<div className="w-full h-full flex justify-center items-center text-4xl font-bold text-center">click on a flashcard set to start editing!</div>)
-        }
-
-        else if (view_type === "edit" && set_id !== undefined) {
-            setComponent(<EditFlashcard set_id={set_id} />)
-        }
-
-        else if (view_type === "view" && set_id !== undefined) {
-            setComponent(<ViewFlashcard set_id={set_id}/>)
+        if (subscribed) {
+            if (view_type === undefined && set_id === undefined) {
+                setComponent(<div className="w-full h-full flex justify-center items-center text-4xl font-bold text-center">click on a flashcard set to start editing!</div>)
+            }
+    
+            else if (view_type === "edit" && set_id !== undefined) {
+                setComponent(<EditFlashcard set_id={set_id} />)
+            }
+    
+            else if (view_type === "view" && set_id !== undefined) {
+                setComponent(<ViewFlashcard set_id={set_id}/>)
+            }
         }
 
         console.count("Dashboard index.tsx useEffect")
