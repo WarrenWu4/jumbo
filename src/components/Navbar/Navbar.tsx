@@ -1,7 +1,7 @@
 import { FaMoon, FaClone, FaSun } from "react-icons/fa"
 import { useEffect, useState } from "react"
 import GetTheme from "../../lib/GetTheme"
-import { useNavigate } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import { auth } from "../../firebase"
 
 export default function Navbar() {
@@ -34,7 +34,7 @@ export default function Navbar() {
     return (
     <div className="w-full py-6 px-8 flex justify-between items-center">
 
-        <div className="font-bold text-2xl px-5 py-4">JUMBO</div>
+        <NavLink to={"/"} className="font-bold text-2xl px-5 py-4">JUMBO</NavLink>
 
         <div className="flex px-5 py-4 [&>*]:ml-4">
             <button type="button" onClick={switchTheme}>

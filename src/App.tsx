@@ -1,68 +1,82 @@
 // pages
 import Dashboard from "./pages/Dashboard/index.tsx";
 import Landing from "./pages/Landing/index.tsx";
-import EditFlashcard from "./pages/EditFlashcard/index.tsx";
-import StudyFlaschard from "./pages/StudyFlaschard/index.tsx";
 import Error from "./pages/Error/index.tsx";
 import Shop from "./pages/Shop/index.tsx";
+import Info from "./pages/Premium/Info/index.tsx";
 
 import { Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "./firebase.ts"
-import { doc, setDoc } from "firebase/firestore";
-import Info from "./pages/Premium/Info/index.tsx";
+import { auth } from "./firebase.ts";
+
+
+export interface JumboUserProfile { 
+    uid: string;
+    photoURL: string | null;
+    displayName: string | null;
+    email: string | null;
+    isAnonymous: boolean;
+}
+
+export const AuthContext = createContext<JumboUserProfile | null>(null)
 
 export default function App() {
 
-  const [isVerifying, setIsVerifying] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  
-  // *check if user is logged in
-  useEffect(() => {
+    const [userInfo, setUserInfo] = useState<JumboUserProfile | null>( null)
+    const [routes, setRoutes] = useState<JSX.Element>(<Route path="/" element={<BlankPage/>} />)
+    
+    useEffect(() => {
+        
+        // check if user is logged in
+        try {
+            onAuthStateChanged(auth, async(user) => {
+                if (user) {
+                    const tempUser:JumboUserProfile = {
+                        uid: user.uid, photoURL: user.photoURL, displayName: user.displayName, email: user.email, isAnonymous: user.isAnonymous
+                    }
+                    setUserInfo((user) ? tempUser : null)
+                    setRoutes((user) ? 
+                    <>
+                        <Route path="/" element={<Dashboard/>}/>
+                        <Route path="/set/:view_type/:set_id" element={<Dashboard/>}/>
+        
+                        <Route path="/shop" element={<Shop/>} />
+                        <Route path="/premium/info" element={<Info/>} />
+        
+                        <Route path="/start" element={<Landing/>}/>
+                    </> 
+                    : 
+                    <>
+                        <Route path="/" element={<Landing/>} />
+                    </>
+                    )
+                }
+                else {
+                    console.log("Error msg: user not logged in")
+                }
+            })
+        } catch(e) {
+            console.log("Error occurred getting authentication state\nError msg:", e)
+        }
+        
+    }, [])
 
-    // !i think will be a probably if same user logs in from different device so replace this with get current user and set the user document when google auth verifies
-    onAuthStateChanged(auth, async(user:any) => {
-      if (user) {
-        await setDoc(doc(db, "users", user.uid), {
-            uid: user.uid,
-            displayName: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
-        })
-        setIsLoggedIn(true);
-      }
-      setIsVerifying(false);
-    })
+    return (
+      <>
+        <AuthContext.Provider value={userInfo}>
+            <Routes>
+                {routes}
+                <Route path="*" element={<Error/>} />
+            </Routes>
+        </AuthContext.Provider>
+      </>
+    )
+}
 
-  }, [])
-  
-
-  return (
-    <>
-      {!isVerifying && <Routes>
-
-          {isLoggedIn && <>
-            <Route path="/" element={<Dashboard/>}/>
-            <Route path="/set/edit/:set_id" element={<EditFlashcard/>} />
-            <Route path="/set/view/:set_id" element={<StudyFlaschard/>} />
-
-            <Route path="/shop" element={<Shop/>} />
-            <Route path="/premium/info" element={<Info/>} />
-
-            <Route path="/start" element={<Landing/>}/>
-          </>
-          }
-
-          {!isLoggedIn && <>
-            <Route path="/" element={<Landing/>} />
-          </>
-          }
-
-          <Route path="*" element={<Error/>} />
-
-        </Routes>
-      }
-    </>
-  )
+const BlankPage = () => {
+    return (
+        <div className="w-screen h-screen overflow-hidden bg-white dark:bg-black">
+        </div>
+    )
 }
