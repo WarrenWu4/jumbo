@@ -31,12 +31,12 @@ export default function App() {
         // check if user is logged in
         try {
             onAuthStateChanged(auth, async(user) => {
-                if (user) {
+                if (user !== null) {
                     const tempUser:JumboUserProfile = {
                         uid: user.uid, photoURL: user.photoURL, displayName: user.displayName, email: user.email, isAnonymous: user.isAnonymous
                     }
-                    setUserInfo((user) ? tempUser : null)
-                    setRoutes((user) ? 
+                    setUserInfo(tempUser)
+                    setRoutes(
                     <>
                         <Route path="/" element={<Dashboard/>}/>
                         <Route path="/set/:view_type/:set_id" element={<Dashboard/>}/>
@@ -46,14 +46,15 @@ export default function App() {
         
                         <Route path="/start" element={<Landing/>}/>
                     </> 
-                    : 
-                    <>
-                        <Route path="/" element={<Landing/>} />
-                    </>
                     )
                 }
                 else {
-                    console.log("Error msg: user not logged in")
+                    setUserInfo(null)
+                    setRoutes(
+                        <>
+                            <Route path="/" element={<Landing/>} />
+                        </>
+                    )
                 }
             })
         } catch(e) {
