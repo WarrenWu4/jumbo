@@ -12,7 +12,7 @@ export default function Dashboard() {
 
     useEffect(() => {
 
-        let subscribed = false
+        let subscribed = true
 
         GetTheme()
 
@@ -33,7 +33,7 @@ export default function Dashboard() {
         console.count("Dashboard index.tsx useEffect")
 
         return () => {
-            subscribed = true
+            subscribed = false
         }
 
     }, [view_type, set_id])

@@ -26,11 +26,11 @@ export default function FlashcardRow({cardIndex, cardText}:FlashcardRowProps) {
                     const tempRef = useRef<HTMLTextAreaElement>(null);
 
                     return (
-                        <JumboInput key={index} value={text} textRef={tempRef} className="w-full border-black border-4 border-solid rounded-md text-base flex items-center px-4"  />
+                        <JumboInput key={index} value={text} textRef={tempRef} className="w-full border-black dark:border-white dark:bg-black border-4 border-solid rounded-md text-base flex items-center px-4"  />
                     )
                 })
             }
-            <button type="button" onClick={addFace} className="text-xl bg-black rounded-md text-white h-14 aspect-square">+</button>
+            <button type="button" onClick={addFace} className="text-xl bg-black dark:bg-white dark:text-black rounded-md text-white h-14 aspect-square">+</button>
         </div>
     )
 }
