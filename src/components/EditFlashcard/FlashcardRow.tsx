@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import JumboInput from "../JumboInput";
 
 interface FlashcardRowProps {
@@ -8,20 +8,21 @@ interface FlashcardRowProps {
 
 export default function FlashcardRow({cardIndex, cardText}:FlashcardRowProps) {
     
-    console.log(cardIndex)
+    const [data, setData] = useState<string[]>(cardText)    
 
     const addFace = () => {
-        // let newCards = props.cards
-        // const newIndex = Object.keys(newCards[props.id]).length
-        // newCards[props.id][newIndex] = ""
-        // console.log(newCards)
-        // props.setCards(newCards)
+        console.log(data)
+        let tempData = data;
+        tempData.push("test")
+        if (tempData === data) console.log("e")
+        console.log(tempData, data)
+        setData(tempData)
     }
 
     return (
         <div className="flex w-full gap-x-4">
             {
-                cardText.map((text:string, index:number) => {
+                data.map((text:string, index:number) => {
 
                     const tempRef = useRef<HTMLTextAreaElement>(null);
 

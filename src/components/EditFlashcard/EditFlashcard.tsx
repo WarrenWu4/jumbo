@@ -20,6 +20,8 @@ export default function EditFlashcard({set_id}:EditFlashcardProps) {
     const [loaded, setLoaded] = useState<boolean>(false)
     const [data, setData] = useState<FlashcardSetData>(defaultFlashcardSetData)
 
+    // create a state that stores a copy of cards so saving/updating is easier
+    const[cardsCopy, setCardsCopy] = useState<FlashcardMetaData[]>([])
 
     // only run once on mount
     useEffect(() => {
@@ -52,17 +54,18 @@ export default function EditFlashcard({set_id}:EditFlashcardProps) {
 
 
     const saveFlashcards = async() => {
-        let tempMetaData:FlashcardSetMetaData = data.metaData
-        if (titleRef.current !== null && descRef.current !== null) {
-            tempMetaData.title = titleRef.current.defaultValue
-            tempMetaData.desc = descRef.current.defaultValue
-        } 
-        if (set_id !== undefined) {
-            await updateFlashcards(set_id, {metaData: tempMetaData, cardData:data.cardData})
-        } else {
-            console.error("set_id is undefined...")
-        }
-        alert("saved!")
+        // let tempMetaData:FlashcardSetMetaData = data.metaData
+        // if (titleRef.current !== null && descRef.current !== null) {
+        //     tempMetaData.title = titleRef.current.defaultValue
+        //     tempMetaData.desc = descRef.current.defaultValue
+        // } 
+        // if (set_id !== undefined) {
+        //     await updateFlashcards(set_id, {metaData: tempMetaData, cardData:data.cardData})
+        // } else {
+        //     console.error("set_id is undefined...")
+        // }
+        console.log(data.cardData)
+        alert("work in progress")
     }
 
     const addCard = () => {
@@ -72,7 +75,6 @@ export default function EditFlashcard({set_id}:EditFlashcardProps) {
             cardStudied: 0,
             currBox: 0,
         }, ...data.cardData]
-        console.log(tempFlashcards)
         setData({
             metaData: data.metaData,
             cardData: tempFlashcards

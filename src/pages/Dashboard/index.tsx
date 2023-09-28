@@ -10,11 +10,12 @@ export default function Dashboard() {
     const { view_type, set_id } = useParams<string>()
     const [component, setComponent] = useState<JSX.Element>(<></>)
 
+    GetTheme()
+    
     useEffect(() => {
 
         let subscribed = true
 
-        GetTheme()
 
         if (subscribed) {
             if (view_type === undefined && set_id === undefined) {

@@ -45,6 +45,7 @@ export default function App() {
                         <Route path="/premium/info" element={<Info/>} />
         
                         <Route path="/start" element={<Landing/>}/>
+                        <Route path="*" element={<Error/>} />
                     </> 
                     )
                 }
@@ -53,6 +54,7 @@ export default function App() {
                     setRoutes(
                         <>
                             <Route path="/" element={<Landing/>} />
+                            <Route path="*" element={<Error/>} />
                         </>
                     )
                 }
@@ -68,7 +70,6 @@ export default function App() {
         <AuthContext.Provider value={userInfo}>
             <Routes>
                 {routes}
-                <Route path="*" element={<Error/>} />
             </Routes>
         </AuthContext.Provider>
       </>
