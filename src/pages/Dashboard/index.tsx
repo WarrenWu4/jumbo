@@ -1,48 +1,66 @@
 import { useEffect, useState } from "react";
 import GetTheme from "../../lib/GetTheme";
-import Sidebar from "../../components/Sidebar/Sidebar";
-import { useParams } from "react-router-dom";
+import FileCard from "../../components/FileCard/FileCard";
+import Navbar from "../../components/Navbar/Navbar";
+
+import { IoMdAdd } from "react-icons/io";
 import EditFlashcard from "../../components/EditFlashcard/EditFlashcard";
-import ViewFlashcard from "../../components/ViewFlashcard/ViewFlashcard";
 
 export default function Dashboard() {
 
-    const { view_type, set_id } = useParams<string>()
-    const [component, setComponent] = useState<JSX.Element>(<></>)
+    // const { view_type, set_id } = useParams<string>()
+    const [showView, setShowView] = useState<boolean>(false);
+    const [flashcardSetComponent, setFlashcardSetComponent] = useState<JSX.Element>(<></>)
 
     GetTheme()
-    
+
     useEffect(() => {
-
-        let subscribed = true
-
-
-        if (subscribed) {
-            if (view_type === undefined && set_id === undefined) {
-                setComponent(<div className="w-full h-full flex justify-center items-center text-4xl font-bold text-center">click on a flashcard set to start editing!</div>)
+        const handleKeyDown = (e:any) => {
+            if (e.key === "Escape") {
+                console.log("Exiting view....")
+                window.history.replaceState({}, "", `/`)
+                setShowView(false);
             }
-    
-            else if (view_type === "edit" && set_id !== undefined) {
-                setComponent(<EditFlashcard set_id={set_id} />)
-            }
-    
-            else if (view_type === "view" && set_id !== undefined) {
-                setComponent(<ViewFlashcard set_id={set_id}/>)
-            }
+
         }
-
-        console.count("Dashboard index.tsx useEffect")
-
+        document.addEventListener("keydown", handleKeyDown, false);
         return () => {
-            subscribed = false
+            document.removeEventListener("keydown", handleKeyDown, false);
         }
+    }, [])
 
-    }, [view_type, set_id])
+    const handleAddSet = () => {
+        console.log("add set")
+    }
+
+    const renderView = (id:string) => {
+        setShowView(true);
+        setFlashcardSetComponent(<EditFlashcard set_id={id}/>)
+    }
 
     return (
-        <div className="w-screen h-screen overflow-x-hidden flex">
-            <Sidebar/>
-            {component}
+        <div className="w-screen h-screen overflow-x-hidden flex flex-col relative">
+
+            <Navbar/>
+
+            <div className="flex gap-4 px-12 flex-wrap">
+                <FileCard title={"title"} description={"description here"} totalCards={0} starred={false} link={"TWhZb5VCk3qnculC3HF4"} setState={renderView}/>
+            </div>
+
+            <div className="mt-12 w-full text-center text-xl">
+                <strong>shift + s</strong> to create a new flashcard set
+            </div>
+
+            <button type="button" onClick={handleAddSet} className="w-12 aspect-square rounded-full border-4 border-solid border-black flex items-center justify-center absolute bottom-[52px] right-[52px]">
+                <IoMdAdd size={28} strokeWidth={12}/>
+            </button>
+
+            <div className={`w-screen h-screen overflow-hidden absolute bg-black/70 backdrop-blur-sm p-8 ${showView ? "flex": "hidden"}`}>
+                <div className="w-full h-full bg-white rounded-xl">
+                    {flashcardSetComponent}
+                </div>
+            </div>
+
         </div>
     )
 }

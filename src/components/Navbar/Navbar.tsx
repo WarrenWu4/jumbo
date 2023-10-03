@@ -44,6 +44,7 @@ export default function Navbar() {
             <button type="button" onClick={handleDashboard} >
                 <FaClone size={24}/>
             </button>
+
         </div>
 
     </div>

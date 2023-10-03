@@ -5,7 +5,8 @@ import Error from "./pages/Error/index.tsx";
 import Shop from "./pages/Shop/index.tsx";
 import Info from "./pages/Premium/Info/index.tsx";
 
-import { Routes, Route } from "react-router-dom";
+// other shit
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { createContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase.ts";
@@ -21,10 +22,36 @@ export interface JumboUserProfile {
 
 export const AuthContext = createContext<JumboUserProfile | null>(null)
 
+const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Dashboard/>
+    },
+    {
+        path: "/set/:view_type/:set_id",
+        element: <Dashboard/>
+    },
+    {
+        path: "/shop",
+        element: <Shop/>
+    },
+    {
+        path: "/premium/info",
+        element: <Info/>
+    },
+    {
+        path: "/start",
+        element: <Landing/>
+    },
+    {
+        path: "*",
+        element: <Error/>
+    }
+])
+
 export default function App() {
 
     const [userInfo, setUserInfo] = useState<JumboUserProfile | null>( null)
-    const [routes, setRoutes] = useState<JSX.Element>(<Route path="/" element={<BlankPage/>} />)
     
     useEffect(() => {
         
@@ -36,27 +63,9 @@ export default function App() {
                         uid: user.uid, photoURL: user.photoURL, displayName: user.displayName, email: user.email, isAnonymous: user.isAnonymous
                     }
                     setUserInfo(tempUser)
-                    setRoutes(
-                    <>
-                        <Route path="/" element={<Dashboard/>}/>
-                        <Route path="/set/:view_type/:set_id" element={<Dashboard/>}/>
-        
-                        <Route path="/shop" element={<Shop/>} />
-                        <Route path="/premium/info" element={<Info/>} />
-        
-                        <Route path="/start" element={<Landing/>}/>
-                        <Route path="*" element={<Error/>} />
-                    </> 
-                    )
                 }
                 else {
                     setUserInfo(null)
-                    setRoutes(
-                        <>
-                            <Route path="/" element={<Landing/>} />
-                            <Route path="*" element={<Error/>} />
-                        </>
-                    )
                 }
             })
         } catch(e) {
@@ -68,17 +77,15 @@ export default function App() {
     return (
       <>
         <AuthContext.Provider value={userInfo}>
-            <Routes>
-                {routes}
-            </Routes>
+            <RouterProvider router={router}/>
         </AuthContext.Provider>
       </>
     )
 }
 
-const BlankPage = () => {
-    return (
-        <div className="w-screen h-screen overflow-hidden bg-white dark:bg-black">
-        </div>
-    )
-}
+// const BlankPage = () => {
+//     return (
+//         <div className="w-screen h-screen overflow-hidden bg-white dark:bg-black">
+//         </div>
+//     )
+// }

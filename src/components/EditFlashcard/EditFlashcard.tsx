@@ -82,7 +82,7 @@ export default function EditFlashcard({set_id}:EditFlashcardProps) {
     }
 
     return (
-        <div className="w-full min-h-screen overflow-y-scroll items-start flex text-4xl font-bold py-12 px-4 flex-col">
+        <div className="w-full min-h-full overflow-y-scroll items-start flex text-4xl font-bold py-12 px-4 flex-col">
 
             {loaded && 
             <>
