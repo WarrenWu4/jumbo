@@ -8,19 +8,20 @@ interface FileCardProps {
     starred: boolean;
     link: string;
     setState: Function;
+    index: number;
 }
 
-const FileCard = ({title, description, totalCards, starred, link, setState}: FileCardProps) => {
+const FileCard = ({title, description, totalCards, starred, link, setState, index}: FileCardProps) => {
     
     const handlePathChange = () => {
         // change url (purely visual doesn't actually load data yet)
         window.history.replaceState({}, "", `/set/edit/${link}`)
         // change state which will actually load shit
-        setState("edit", link)
+        setState("edit", index)
     }
 
     return (
-        <button type="button" onClick={handlePathChange} className="w-[288px] h-[160px] px-4 py-3 border-solid border-black border-4 rounded-xl">
+        <button type="button" onClick={handlePathChange} className="w-[288px] h-[160px] px-4 py-3 border-solid border-black dark:border-white border-4 rounded-xl">
 
             <div className="w-full h-full flex flex-col justify-between">
 

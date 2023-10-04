@@ -15,6 +15,7 @@ export default function Dashboard() {
     const [showView, setShowView] = useState<boolean>(false);
     const [flashcardSetComponent, setFlashcardSetComponent] = useState<JSX.Element>(<></>)
     const [data, setData] = useState<FlashcardSetMetaData[]>()
+    const [setAdded, setSetAdded] = useState<boolean>(false)
 
     GetTheme()
 
@@ -40,23 +41,25 @@ export default function Dashboard() {
         getData()
         return () => {
             subscribed = false;
+            setSetAdded(false);
             document.removeEventListener("keydown", handleKeyDown, false);
         }
-    }, [])
+    }, [setAdded])
 
     const handleAddSet = async () => {
         try {
             await addFlashcards()
+            setSetAdded(true)
             console.log("Successfully added flashcard set!")
         } catch (e) {
             console.log("Error occurred:", e)
         }
     }
 
-    const renderView = (type:string, id:string) => {
+    const renderView = (type:string, index:number) => {
         setShowView(true);
-        if (type === "edit") {
-            setFlashcardSetComponent(<EditFlashcard set_id={id}/>)
+        if (type === "edit" && data !== undefined) {
+            setFlashcardSetComponent(<EditFlashcard title={data[index].title} link={data[index].id} desc={data[index].desc} cards={data[index].cards}/>)
         }
     }
 
@@ -67,8 +70,8 @@ export default function Dashboard() {
 
             <div className="flex gap-4 px-12 flex-wrap">
                 {(data !== undefined) ? 
-                    data.map((info) => {
-                        return <FileCard key={info.id} title={info.title} description={info.desc} totalCards={info.numCards} starred={info.starred} link={info.id} setState={renderView}/>
+                    data.map((info, index) => {
+                        return <FileCard key={info.id} title={info.title} description={info.desc} totalCards={info.numCards} starred={info.starred} link={info.id} index={index} setState={renderView}/>
                     })
                     :
                     <></>
