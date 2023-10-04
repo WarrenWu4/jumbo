@@ -1,3 +1,9 @@
+/*
+! ISSUES
+- [ ] When user logs out, the router doesn't change to the landing page
+- [ ] theme doesn't apply during initial on mount/load
+*/
+
 // pages
 import Dashboard from "./pages/Dashboard/index.tsx";
 import Landing from "./pages/Landing/index.tsx";
@@ -22,7 +28,7 @@ export interface JumboUserProfile {
 
 export const AuthContext = createContext<JumboUserProfile | null>(null)
 
-const router = createBrowserRouter([
+const userRoutes = createBrowserRouter([
     {
         path: "/",
         element: <Dashboard/>
@@ -52,9 +58,11 @@ const router = createBrowserRouter([
 export default function App() {
 
     const [userInfo, setUserInfo] = useState<JumboUserProfile | null>( null)
-    
-    useEffect(() => {
-        
+    // ! unsure about router type thing, so is any for now
+    const [router, setRouter] = useState<any>(createBrowserRouter([{path: "/", element: <BlankPage/>}, {path: "*", element: <Error/>}]))
+
+    useEffect(() => {    
+
         // check if user is logged in
         try {
             onAuthStateChanged(auth, async(user) => {
@@ -62,9 +70,11 @@ export default function App() {
                     const tempUser:JumboUserProfile = {
                         uid: user.uid, photoURL: user.photoURL, displayName: user.displayName, email: user.email, isAnonymous: user.isAnonymous
                     }
+                    setRouter(userRoutes)
                     setUserInfo(tempUser)
                 }
                 else {
+                    setRouter(createBrowserRouter([{path: "/", element: <Landing/>}, {path: "*", element: <Error/>}]))
                     setUserInfo(null)
                 }
             })
@@ -83,9 +93,9 @@ export default function App() {
     )
 }
 
-// const BlankPage = () => {
-//     return (
-//         <div className="w-screen h-screen overflow-hidden bg-white dark:bg-black">
-//         </div>
-//     )
-// }
+const BlankPage = () => {
+    return (
+        <div className="w-screen h-screen overflow-hidden bg-white dark:bg-black">
+        </div>
+    )
+}

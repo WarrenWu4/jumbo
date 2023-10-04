@@ -1,13 +1,14 @@
 // ! firebase doesn't support arrays of arrays so need to stringify shit
-export default interface FlashcardSetData {
-    cardData: FlashcardMetaData[];
-    metaData: FlashcardSetMetaData;
-}
-
-export interface FlashcardSetMetaData {
+export default interface FlashcardSetMetaData {
+    id: string;
+    author: string;
     title: string;
     desc: string;
     numStudied: number;
+    numCards: number;
+    dateCreated: Date;
+    starred: boolean;
+    cards: FlashcardMetaData[];
 }
 
 /**
@@ -25,26 +26,27 @@ export interface FlashcardMetaData {
 }
 
 /**
- * default values for flashcard set
+ * default values for flashcard set meta data and flashcard meta data
  */
-export const defaultFlashcardSetData:FlashcardSetData = {
-    cardData: [
-        {
-            cardText: ["", ""],
-            cardCorrect: 0,
-            cardStudied: 0,
-            currBox: 0,
-        },
-        {
-            cardText: ["", ""],
-            cardCorrect: 0,
-            cardStudied: 0,
-            currBox: 0,
-        },
-    ],
-    metaData: {
-        title: "untitled",
-        desc: "",
-        numStudied: 0,
-    }
+export const defaultFlashcardSetMetaData:FlashcardSetMetaData = {
+    id: "",
+    author: "unknown",
+    title: "title",
+    desc: "description",
+    numStudied: 0,
+    numCards: 2,
+    dateCreated: new Date(),
+    starred: false,
+    cards: [{
+        cardText: ["", ""],
+        cardCorrect: 0,
+        cardStudied: 0,
+        currBox: 0,
+    },
+    {
+        cardText: ["", ""],
+        cardCorrect: 0,
+        cardStudied: 0,
+        currBox: 0,
+    }]
 }

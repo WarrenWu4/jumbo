@@ -16,7 +16,7 @@ const FileCard = ({title, description, totalCards, starred, link, setState}: Fil
         // change url (purely visual doesn't actually load data yet)
         window.history.replaceState({}, "", `/set/edit/${link}`)
         // change state which will actually load shit
-        setState(link)
+        setState("edit", link)
     }
 
     return (

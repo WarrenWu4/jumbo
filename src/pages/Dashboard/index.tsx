@@ -5,37 +5,59 @@ import Navbar from "../../components/Navbar/Navbar";
 
 import { IoMdAdd } from "react-icons/io";
 import EditFlashcard from "../../components/EditFlashcard/EditFlashcard";
+import FlashcardSetMetaData from "../../types/FlashcardSetTypes";
+import { GetSetsMetaData } from "../../lib/GetFlashcards";
+import addFlashcards from "../../lib/EditFlashcards";
 
 export default function Dashboard() {
 
     // const { view_type, set_id } = useParams<string>()
     const [showView, setShowView] = useState<boolean>(false);
     const [flashcardSetComponent, setFlashcardSetComponent] = useState<JSX.Element>(<></>)
+    const [data, setData] = useState<FlashcardSetMetaData[]>()
 
     GetTheme()
 
     useEffect(() => {
+        let subscribed = true;
         const handleKeyDown = (e:any) => {
             if (e.key === "Escape") {
                 console.log("Exiting view....")
                 window.history.replaceState({}, "", `/`)
                 setShowView(false);
             }
-
+        }
+        const getData = async () => {
+            if(subscribed) {
+                console.log("Getting user flashcard data...")
+                const snapshot = await GetSetsMetaData()
+                if (snapshot.data !== undefined) {
+                    setData(snapshot.data.sets)
+                }
+            }
         }
         document.addEventListener("keydown", handleKeyDown, false);
+        getData()
         return () => {
+            subscribed = false;
             document.removeEventListener("keydown", handleKeyDown, false);
         }
     }, [])
 
-    const handleAddSet = () => {
-        console.log("add set")
+    const handleAddSet = async () => {
+        try {
+            await addFlashcards()
+            console.log("Successfully added flashcard set!")
+        } catch (e) {
+            console.log("Error occurred:", e)
+        }
     }
 
-    const renderView = (id:string) => {
+    const renderView = (type:string, id:string) => {
         setShowView(true);
-        setFlashcardSetComponent(<EditFlashcard set_id={id}/>)
+        if (type === "edit") {
+            setFlashcardSetComponent(<EditFlashcard set_id={id}/>)
+        }
     }
 
     return (
@@ -44,14 +66,20 @@ export default function Dashboard() {
             <Navbar/>
 
             <div className="flex gap-4 px-12 flex-wrap">
-                <FileCard title={"title"} description={"description here"} totalCards={0} starred={false} link={"TWhZb5VCk3qnculC3HF4"} setState={renderView}/>
+                {(data !== undefined) ? 
+                    data.map((info) => {
+                        return <FileCard key={info.id} title={info.title} description={info.desc} totalCards={info.numCards} starred={info.starred} link={info.id} setState={renderView}/>
+                    })
+                    :
+                    <></>
+                }
             </div>
 
             <div className="mt-12 w-full text-center text-xl">
                 <strong>shift + s</strong> to create a new flashcard set
             </div>
-
-            <button type="button" onClick={handleAddSet} className="w-12 aspect-square rounded-full border-4 border-solid border-black flex items-center justify-center absolute bottom-[52px] right-[52px]">
+                
+            <button type="button" onClick={handleAddSet} className="w-12 aspect-square rounded-full border-4 border-solid border-black dark:border-white flex items-center justify-center absolute bottom-[52px] right-[52px]">
                 <IoMdAdd size={28} strokeWidth={12}/>
             </button>
 

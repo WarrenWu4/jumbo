@@ -3,8 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaClone } from "react-icons/fa"
 import FlashcardRow from "./FlashcardRow";
 import GetFlashcards from "../../lib/GetFlashcards";
-import { updateFlashcards } from "../../lib/EditFlashcards";
-import FlashcardSetData, { FlashcardMetaData, FlashcardSetMetaData, defaultFlashcardSetData } from "../../types/FlashcardSetTypes";
 import JumboInput from "../JumboInput";
 
 interface EditFlashcardProps {
@@ -20,13 +18,10 @@ export default function EditFlashcard({set_id}:EditFlashcardProps) {
     const [loaded, setLoaded] = useState<boolean>(false)
     const [data, setData] = useState<FlashcardSetData>(defaultFlashcardSetData)
 
-    // create a state that stores a copy of cards so saving/updating is easier
-    const[cardsCopy, setCardsCopy] = useState<FlashcardMetaData[]>([])
-
     // only run once on mount
     useEffect(() => {
 
-        console.count("EditFlashcard index.tsx useEffect")
+        console.count(`Getting flashcard data for ${set_id}`)
 
         let subscribed = true
         setLoaded(false)
@@ -36,10 +31,17 @@ export default function EditFlashcard({set_id}:EditFlashcardProps) {
 
             const dat = await GetFlashcards(set_id)
 
-            if (dat.status === "400 ERROR") nav("/error")
-
-            if (dat.metaData !== undefined && dat.cardData) {
-                setData({metaData: dat.metaData, cardData: dat.cardData})
+            if (dat.docId !== undefined && dat.data !== undefined) {
+                setData({
+                    cardData: dat.cardData,
+                    author: dat.author,
+                    title: dat.title,
+                    desc: dat.desc,
+                    numStudied: dat.numStudied,
+                    numCards: dat.numCards,
+                    dateCreated: dat.dateCreated,
+                    starred: dat.starred,
+                })
             }
             setLoaded(true)
         }
