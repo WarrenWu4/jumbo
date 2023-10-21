@@ -10,7 +10,6 @@ const middleware = async(req: NextRequest) => {
 
     // get user from supabase
     const { data: { user } } = await supabase.auth.getUser()
-    console.log(user)
 
     // if user is not logged in redirect to login page
     if(!user && req.nextUrl.pathname !== "/login") {
