@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, setDoc } from "firebase/firestore"
 import { auth, db } from "../firebase"
-import FlashcardSetData, { defaultFlashcardSetData } from "../types/FlashcardSetTypes"
+import FlashcardSetData, { defaultFlashcardSetData } from "../types/FlashcardTypes"
 
 // add a new flashcard set
 export default async function addFlashcards () {

@@ -1,6 +1,6 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore"
 import { auth, db } from "../firebase"
-import FlashcardSetData, { FlashcardSetMetaData } from "../types/FlashcardSetTypes"
+import FlashcardSetData, { FlashcardSetMetaData } from "../types/FlashcardTypes"
 
 export default async function GetFlashcards (setId:string) {
 

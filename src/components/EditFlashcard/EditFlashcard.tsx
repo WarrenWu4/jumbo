@@ -4,7 +4,7 @@ import { FaClone } from "react-icons/fa"
 import FlashcardRow from "./FlashcardRow";
 import GetFlashcards from "../../lib/GetFlashcards";
 import { updateFlashcards } from "../../lib/EditFlashcards";
-import FlashcardSetData, { FlashcardMetaData, FlashcardSetMetaData, defaultFlashcardSetData } from "../../types/FlashcardSetTypes";
+import FlashcardSetData, { FlashcardMetaData, FlashcardSetMetaData, defaultFlashcardSetData } from "../../types/FlashcardTypes";
 import JumboInput from "../JumboInput";
 
 interface EditFlashcardProps {
