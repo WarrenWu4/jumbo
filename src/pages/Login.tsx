@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import Loading from "../components/Loading";
+import MainLayout from "../layouts/MainLayout";
+import LoadingPage from "./LoadingPage";
 
 const Login = () => {
 
@@ -32,19 +33,17 @@ const Login = () => {
         nav("/dashboard");
     }
 
+    if (isLoading) {
+        return <LoadingPage/>
+    }
+
     return (
-        <div className="w-full h-full py-8 px-4 flex flex-col">
+        <MainLayout>
 
-            {isLoading ? 
-                <Loading/>
-            :
-            <>
-                <button onClick={signInWithGoogle} className="w-fit p-4 border-4 border-black rounded-md" type="button">login with google</button>  
-                <button onClick={signInAnonymously} className="p-4 border-4 border-black rounded-md w-fit " type="button">login in anonymously</button>
-            </>
-            }
+            <button onClick={signInWithGoogle} className="w-fit p-4 border-4 border-black rounded-md" type="button">login with google</button>  
+            <button onClick={signInAnonymously} className="p-4 border-4 border-black rounded-md w-fit " type="button">login in anonymously</button>
 
-        </div>
+        </MainLayout>
     );
 }
 

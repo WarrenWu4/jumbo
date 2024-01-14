@@ -2,11 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Flashcard from "../types/FlashcardTypes";
+import MainLayout from "../layouts/MainLayout";
+import LoadingPage from "./LoadingPage";
 
 const Dashboard = () => {
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [data, setData] = useState<Flashcard[]>([]);
+    const [data, setData] = useState<Flashcard[] | undefined>();
     const userContext = useContext(AuthContext);
     const nav = useNavigate();
 
@@ -14,7 +15,6 @@ const Dashboard = () => {
 
         const session_token = localStorage.getItem("session_token");
         if (session_token === null && userContext.user === null) nav("/login");
-        setIsLoading(false);
 
         // if logged in with jumbo then get data from db
         if (userContext.user !== null) {
@@ -22,16 +22,27 @@ const Dashboard = () => {
 
         // if logged in anonymously then get data from local storage
         if (session_token !== null) {
-            const data = localStorage.getItem("flashcards");
-            
+            const localData = localStorage.getItem("flashcards");
+            if (localData === null) {
+                setData([]);
+            } else {
+                const jsonData:Flashcard[] = JSON.parse(localData);
+                setData(jsonData);
+            }
         }
 
     }, [])
 
-    return (
-        <div className="w-full h-full py-8 px-4 flex flex-col">
+    if (data === undefined) {
+        return <LoadingPage/>
+    }
 
-        </div>
+    return (
+        <MainLayout>
+
+            <a href="/flashcard/create" className="aspect-square text-center border-black border-4 rounded-md">+</a>
+
+        </MainLayout>
     );
 }
 
