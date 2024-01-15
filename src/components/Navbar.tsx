@@ -18,7 +18,7 @@ export default function Navbar() {
     return (
         <div className="w-full flex justify-between">
 
-            <div className="font-bold text-2xl">
+            <div className="font-extrabold text-2xl">
                 JUMBO
             </div>
 
