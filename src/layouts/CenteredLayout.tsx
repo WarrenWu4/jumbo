@@ -9,7 +9,7 @@ interface CenteredLayoutProps {
 
 export default function CenteredLayout({children, className}: CenteredLayoutProps) {
     return (
-        <div className={twMerge("w-full h-full flex flex-col justify-between items-center py-16", className)}>
+        <div className={twMerge("w-full h-full flex flex-col justify-between items-center py-16 gap-y-12", className)}>
 
             <Navbar/>
 

@@ -1,7 +1,6 @@
 export default interface Flashcard {
     id: string;
     title: string;
-    description: string;
     num_studied: number;
     starred: boolean;
     card_refs: string[];
