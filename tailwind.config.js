@@ -21,6 +21,17 @@ export default {
           '50%': { opacity: '1', transform: 'translateY(0rem)' },
           '100%': { opacity: '0', transform: 'translateY(0.4rem)'}
         }
+      },
+      colors: {
+        "dark": "#151715",
+        "light": "#FFFFFF",
+        "primary": "#EFCA63",
+        "secondary": "#B087D9",
+        "accent": "#D8644A",
+        "success": "#59B863",
+        "info": "#4896C2",
+        "warning": "#E9A43D",
+        "error": "#E64848"
       }
     },
   },

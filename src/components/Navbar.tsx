@@ -18,12 +18,12 @@ export default function Navbar() {
     return (
         <div className="w-full flex justify-between">
 
-            <div className="font-extrabold text-2xl">
+            <div className="font-bold text-3xl">
                 JUMBO
             </div>
 
             <button type="button" onClick={changeTheme}>
-                <FiSun size={24} strokeWidth={3}/>
+                <FiSun size={24} strokeWidth={2}/>
             </button>
         
         </div>
