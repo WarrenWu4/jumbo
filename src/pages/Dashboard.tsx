@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Set, SetCardProps } from "../types"
-import { FaStar, FaPlus } from "react-icons/fa"
+import { FaStar, FaPlus, FaClone, FaTrash, FaEdit } from "react-icons/fa"
 import { Link } from "react-router-dom"
 
 export default function Dashboard() {
@@ -31,15 +31,19 @@ export default function Dashboard() {
     }, [])
 
     return (
-        <div className="w-full h-full flex justify-center items-center">
+        <div className="w-full h-full flex flex-col justify-center items-center">
 
-            <Link to={"/flashcard/create"} className="border-8 rounded-md p-4">
-                <FaPlus/>
-            </Link>
 
+            <div className="p-4 border-8 rounded-md mb-4 flex flex-col gap-y-4">
             {setData.map((set:Set, index:number) => {
                 return <SetCard key={index} id={set.id} title={set.title} starred={set.starred} deleteSet={deleteSet} />
             })}
+            </div>
+
+            <Link to={"/flashcard/create"} className="border-8 rounded-md p-4 flex items-center font-bold gap-x-4">
+                Create New Flashcard Set
+                <FaPlus/>
+            </Link>
 
         </div>
     )
@@ -48,17 +52,23 @@ export default function Dashboard() {
 function SetCard({id, title, starred, deleteSet}: SetCardProps) {
 
     return (
-        <div className="border-8 rounded-md w-full flex items-center justify-between">
+        <div className="p-4 gap-x-32 border-8 rounded-md w-full flex items-center justify-between">
 
-            <div className="flex gap-x-3">
+            <div className="flex gap-x-3 font-bold text-xl">
                 {(starred) ? <FaStar/> : null}
                 <div>{title}</div>
             </div>
 
-            <div>
-                <Link to={"/flashcard/view/"+id}>STUDY</Link>
-                <Link to={"/flashcard/edit/"+id}>EDIT</Link>
-                <button type="button" onClick={() => deleteSet(id)}>DELETE</button>
+            <div className="flex gap-x-2 items-center text-xl">
+                <Link to={"/flashcard/view/"+id}>
+                    <FaClone/>
+                </Link>
+                <Link to={"/flashcard/edit/"+id}>
+                    <FaEdit/>
+                </Link>
+                <button type="button" onClick={() => deleteSet(id)}>
+                    <FaTrash/>
+                </button>
             </div>
         
         </div>
