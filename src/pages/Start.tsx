@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 
 export default function Start() {
-    
-    // check if user is logged in with context provider
 
     return (
-        <div className="w-full h-full">
-            <div className="flex flex-col gap-y-8">
+        <div className="w-full h-full flex flex-col items-center">
+
+            <div className="w-full h-full flex flex-col gap-y-8 items-center justify-center">
 
                 <div className="font-bold text-4xl text-center">
                     <span className="text-blue-400">minimal</span>, <span className="text-orange-400">powerful</span>, <span className="text-red-400">efficient</span> flashcards
@@ -14,7 +13,7 @@ export default function Start() {
 
                 <div className="flex gap-x-14">
 
-                    <div className="w-96 aspect-square p-12 border-8 rounded-lg bg-white dark:bg-black z-10">
+                    <div className="w-96 aspect-square p-12 border-8 rounded-lg bg-dark z-10">
 
                         <svg viewBox="0 0 452 437" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -29,7 +28,7 @@ export default function Start() {
                     </div>
 
                     <div className="flex flex-col justify-between">
-                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl" to={(false) ? "/home" : "/login"}>{(false) ? "HOME" : "LOGIN"}</Link>
+                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl" to={"/dashboard"}>DASHBOARD</Link>
                         <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl" to={"/settings"}>SETTINGS</Link>
                         <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl" to={"/tutorial"}>TUTORIAL</Link>
                     </div>

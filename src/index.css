@@ -5,11 +5,11 @@
 
 *,*::before,*::after {
     font-family: "Rubik";
-    @apply border-dark dark:border-light m-0 p-0 box-border
+    @apply border-light m-0 p-0 box-border
 }
 
 body{
-    @apply w-screen h-screen overflow-x-hidden flex justify-center bg-light dark:bg-dark text-dark dark:text-light
+    @apply w-screen h-screen overflow-x-hidden flex justify-center bg-dark text-light
 }
 
 #root {
