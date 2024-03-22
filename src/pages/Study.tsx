@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { Set, blankSet } from "../types";
-import { useNavigate, useParams } from "react-router-dom";
-import { FaA, FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import { IoArrowUndo } from "react-icons/io5";
 
 export default function Study() {
 
@@ -66,6 +67,11 @@ export default function Study() {
     return (
         <div className="w-full h-full px-16 flex flex-col justify-center items-center gap-y-10">
 
+            <Link to={"/dashboard"} className="w-full flex items-center gap-x-2 font-bold text-2xl">
+                <IoArrowUndo/>
+                Dashboard
+            </Link>
+
             <div className="w-full flex justify-center items-center gap-x-10 max-w-screen-lg">
 
                 <button type="button" onClick={prevCard} className="w-12 h-12 text-4xl">
@@ -76,6 +82,13 @@ export default function Study() {
 
                     {setData.flashcards[currCard].faces[currFace]}
 
+                    <div className="absolute bottom-4 left-4 flex gap-x-2">
+                        {
+                            setData.flashcards[currCard].faces.map((_, index:number) => {
+                                return <div className="rounded-full w-3 h-3" style={{background: (currFace == index) ? "#B087D9" : "white"}}/>
+                            })
+                        }
+                    </div>
                 </button>
 
                 <button type="button" onClick={nextCard} className="w-12 h-12 text-4xl">
@@ -84,7 +97,7 @@ export default function Study() {
 
             </div>
 
-            <div className="w-full h-1 rounded-md bg-gray-400 relative">
+            <div className="w-full h-2 rounded-md bg-gray-400 relative">
                 <div className={`absolute top-0 left-0 h-full bg-green-400`} style={{width: currCard/setData.flashcards.length*100+"%"}}></div>
             </div>
 
