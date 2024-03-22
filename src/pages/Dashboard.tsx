@@ -20,7 +20,7 @@ export default function Dashboard() {
         const data = localStorage.getItem("sets");
         if (data) {
             const parsedData = JSON.parse(data);
-            const filteredData = parsedData.filter((set: Set) => set.id !== id);
+            const filteredData = parsedData.filter((setId: string) => setId !== id);
             localStorage.setItem("sets", JSON.stringify(filteredData));
             setData(filteredData);
             localStorage.removeItem(id);
