@@ -5,29 +5,30 @@ import { Link } from "react-router-dom"
 
 export default function Dashboard() {
 
-    const [setData, setSetData] = useState<Set[]>([])
+    const [data, setData] = useState<string[]>([]);
 
     function fetchData() {
         // fetch data from local storage
-        const data = localStorage.getItem("sets")
+        const data = localStorage.getItem("sets");
         if (data) {
-            setSetData(JSON.parse(data))
+            setData(JSON.parse(data));
         }
     }
 
     function deleteSet(id: string) {
         // delete set from local storage
-        const data = localStorage.getItem("sets")
+        const data = localStorage.getItem("sets");
         if (data) {
-            const parsedData = JSON.parse(data)
-            const filteredData = parsedData.filter((set: Set) => set.id !== id)
-            localStorage.setItem("sets", JSON.stringify(filteredData))
-            setSetData(filteredData)
+            const parsedData = JSON.parse(data);
+            const filteredData = parsedData.filter((set: Set) => set.id !== id);
+            localStorage.setItem("sets", JSON.stringify(filteredData));
+            setData(filteredData);
+            localStorage.removeItem(id);
         }
     }
 
     useEffect(() => {
-        fetchData()
+        fetchData();
     }, [])
 
     return (
@@ -35,7 +36,12 @@ export default function Dashboard() {
 
 
             <div className="p-4 border-8 rounded-md mb-4 flex flex-col gap-y-4">
-            {setData.map((set:Set, index:number) => {
+            {data.map((id:string, index:number) => {
+                // fetch data from local storage
+                const localData = localStorage.getItem(id);
+                if (!localData)
+                    return
+                const set:Set = JSON.parse(localData);
                 return <SetCard key={index} id={set.id} title={set.title} starred={set.starred} deleteSet={deleteSet} />
             })}
             </div>
