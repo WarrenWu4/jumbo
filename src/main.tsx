@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/dashboard" element={<Dashboard/>} />
             <Route path="/flashcard/create" element={<FlashcardCreate/>}/>
             <Route path="/flashcard/edit/:setId" element={<FlashcardEdit/>} /> 
-            <Route path="/flashcard/study/:setId" element={<Study/>} /> 
+            <Route path="/flashcard/view/:setId" element={<Study/>} /> 
             <Route path="*" element={<Error/>} />
       </Routes>
       <Analytics/>
