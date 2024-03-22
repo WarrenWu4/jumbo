@@ -5,7 +5,22 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "dark": "#151715",
+        "light": "#FFFFFF",
+        "primary": "#EFCA63",
+        "secondary": "#B087D9",
+        "accent": "#D8644A",
+        "success": "#59B863",
+        "info": "#4896C2",
+        "warning": "#E9A43D",
+        "error": "#E64848"
+      },
+      boxShadow: {
+        "slide-right": "inset 400px 0 0 0 #fff"
+      }
+    },
   },
   plugins: [],
   darkMode: 'class'
