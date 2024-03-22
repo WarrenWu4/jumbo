@@ -16,6 +16,9 @@ export default {
         "info": "#4896C2",
         "warning": "#E9A43D",
         "error": "#E64848"
+      },
+      boxShadow: {
+        "slide-right": "inset 400px 0 0 0 #fff"
       }
     },
   },

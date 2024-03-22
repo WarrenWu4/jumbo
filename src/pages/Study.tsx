@@ -10,12 +10,11 @@ export default function Study() {
     // fetch data
     function fetchSet() {
         // fetch set from localstorage
-        const current = localStorage.getItem('sets');
-        if (current) {
-            const parsed = JSON.parse(current);
-            const set = parsed.find((set: Set) => set.id === set_id);
-            if (set) {
-                setSetData(set);
+        if (set_id) {
+            const current = localStorage.getItem(set_id);
+            if (current) {
+                const parsed = JSON.parse(current);
+                setSetData(parsed);
             }
         }
     }

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { FaGear, FaUser, FaBookOpen } from "react-icons/fa6"
 
 export default function Start() {
 
@@ -28,9 +29,18 @@ export default function Start() {
                     </div>
 
                     <div className="flex flex-col justify-between">
-                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl" to={"/dashboard"}>DASHBOARD</Link>
-                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl" to={"/settings"}>SETTINGS</Link>
-                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl" to={"/tutorial"}>TUTORIAL</Link>
+                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl gap-x-4 hover:shadow-slide-right hover:text-black duration-500 transition" to={"/dashboard"}>
+                            <FaUser/>
+                            DASHBOARD
+                        </Link>
+                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl gap-x-4 hover:shadow-slide-right hover:text-black duration-500 transition" to={"/settings"}>
+                            <FaGear/>
+                            SETTINGS
+                        </Link>
+                        <Link className="w-80 h-24 flex pl-10 items-center border-8 border-white rounded-md font-bold text-2xl gap-x-4 hover:shadow-slide-right hover:text-black duration-500 transition" to={"/tutorial"}>
+                            <FaBookOpen/>
+                            TUTORIAL
+                        </Link>
                     </div>
 
                 </div>

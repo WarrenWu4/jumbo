@@ -1,7 +1,6 @@
 const Error = () => {
     return (
-        <div>
-
+        <div className="w-full h-full flex items-center justify-center">            Error Occurred
         </div>
     );
 }
