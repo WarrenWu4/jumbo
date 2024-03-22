@@ -27,10 +27,10 @@ export default function FlashcardCreate() {
         const setsString = localStorage.getItem('sets');
         if (setsString) {
             const sets:string[] = JSON.parse(setsString);
-            const updatedSets = [...sets, setData];
+            const updatedSets = [...sets, setData.id];
             localStorage.setItem('sets', JSON.stringify(updatedSets));
         } else {
-            localStorage.setItem('sets', JSON.stringify([setData]));
+            localStorage.setItem('sets', JSON.stringify([setData.id]));
         }
         // save set to localstorage via id
         localStorage.setItem(setData.id, JSON.stringify(setData));
