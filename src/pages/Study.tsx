@@ -5,13 +5,13 @@ import { useParams } from "react-router-dom";
 export default function Study() {
 
     const [setData, setSetData] = useState<Set>();
-    const {set_id} = useParams();
+    const {setId} = useParams();
 
     // fetch data
     function fetchSet() {
         // fetch set from localstorage
-        if (set_id) {
-            const current = localStorage.getItem(set_id);
+        if (setId) {
+            const current = localStorage.getItem(setId);
             if (current) {
                 const parsed = JSON.parse(current);
                 setSetData(parsed);

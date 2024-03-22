@@ -10,6 +10,7 @@ import Start from "./pages/Start.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Error from "./pages/Error.tsx";
 import FlashcardCreate from './pages/FlashcardCreate.tsx';
+import FlashcardEdit from './pages/FlashcardEdit.tsx';
 import Study from './pages/Study.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -19,8 +20,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<Start/>} />
             <Route path="/dashboard" element={<Dashboard/>} />
             <Route path="/flashcard/create" element={<FlashcardCreate/>}/>
-            <Route path="/flashcard/edit/:set_id" element={<Error/>} /> 
-            <Route path="/flashcard/study/:set_id" element={<Study/>} /> 
+            <Route path="/flashcard/edit/:setId" element={<FlashcardEdit/>} /> 
+            <Route path="/flashcard/study/:setId" element={<Study/>} /> 
             <Route path="*" element={<Error/>} />
       </Routes>
       <Analytics/>
